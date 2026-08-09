@@ -1,0 +1,34 @@
+name: Deploy Landing Page to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'landing/**'       # فقط با تغییرات landing فعال شود
+  workflow_dispatch:        # امکان اجرای دستی
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './landing'   # پوشه landing را آپلود کن
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
