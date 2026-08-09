@@ -13,6 +13,8 @@ import yaml
 import hashlib
 import os
 import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 from datetime import datetime
 from pathlib import Path
 
