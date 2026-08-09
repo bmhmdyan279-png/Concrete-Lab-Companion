@@ -8,14 +8,14 @@ def get_hash(path):
 
 def update(file, hash_val):
     with open(file, 'r', encoding='utf-8') as f: c = f.read()
-    # Regex اصلاح‌شده و دقیق برای جلوگیری از بلعیدن لینک‌های Markdown
+    # استفاده از \g<1> برای جلوگیری از تداخل با ارقام هش (The Golden Standard)
     if file.endswith('.md'): 
-        c = re.sub(r'(\*\*SHA-256:\*\*\s*`?)([a-fA-F0-9]{64}|[^\s`\]]+)(`?)', r'\1' + hash_val + r'\3', c)
+        c = re.sub(r'(\*\*SHA-256:\*\*\s*`?)([a-fA-F0-9]{64}|[^\s`\]]+)(`?)', r'\g<1>' + hash_val + r'\g<3>', c)
     elif file.endswith('.html'): 
-        c = re.sub(r'(SHA-256:\s*)([a-fA-F0-9]{64}|[A-Z_\-\[\]a-z\s]+)', r'\1' + hash_val, c)
+        c = re.sub(r'(SHA-256:\s*)([a-fA-F0-9]{64}|[A-Z_\-\[\]a-z\s]+)', r'\g<1>' + hash_val, c)
     
     with open(file, 'w', encoding='utf-8') as f: f.write(c)
-    print(f"✅ {file} updated with strict Regex.")
+    print(f"✅ {file} updated successfully.")
 
 files = [f for f in os.listdir('releases') if f.endswith('.xlsx')]
 if not files: print("❌ فایل اکسل در پوشه releases یافت نشد.")
