@@ -1,14 +1,61 @@
-<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><title>همراه دیجیتال بتن</title>
-        <style>body{font-family:Tahoma;max-width:800px;margin:auto;padding:20px}
-        .btn{background:#1F4E79;color:#fff;padding:10px 20px;text-decoration:none;border-radius:5px}
-        table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px;text-align:center}
-        th{background:#1F4E79;color:#fff}.err{background:#FFC7CE}.ok{background:#C6EFCE}</style>
-        </head><body><h1>🧪 همراه دیجیتال آزمایشگاه بتن</h1>
-        <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases" class="btn">⬇️ دانلود اکسل</a>
-        <h2>🛠 اِراتای اصلاح‌شده</h2>
-        <table><tr><th>آزمون</th><th>چاپ کتاب</th><th>مرجع ابزار</th></tr>
-        <tr><td>1-2</td><td class="err">پایه تر</td><td class="ok">پایه خشک</td></tr>
-        <tr><td>2-4</td><td class="err">11.9</td><td class="ok">≈20.5</td></tr>
-        <tr><td>4-3</td><td class="err">33.466</td><td class="ok">≈7.5</td></tr></table>
-        <p>🔐 رمز عبور محافظت: <code>ConcreteLab2026!</code></p>
-        <img src="assets/qr_code.png" width="200"></body></html>
+<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>همراه دیجیتال آزمایشگاه بتن</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+    :root { --input-bg: #FFF2CC; --calc-bg: #F2F2F2; --pass-bg: #C6EFCE; --pass-text: #006100; --warn-bg: #FCE4D6; --warn-text: #C00000; --fail-bg: #FFC7CE; --fail-text: #9C0006; --primary: #1F4E79; --accent: #ED7D31; --text: #333; --bg: #fff; }
+    @media (prefers-color-scheme: dark) { :root { --text: #e0e0e0; --bg: #121212; --primary: #5fa0d3; } }
+    * { box-sizing: border-box; }
+    body { font-family: 'Vazirmatn', Tahoma, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.8; background: var(--bg); color: var(--text); }
+    header { text-align: center; padding: 40px 0; border-bottom: 3px solid var(--primary); }
+    h1 { color: var(--primary); font-size: 2.2em; margin-bottom: 10px; }
+    .subtitle { color: #666; font-size: 1.1em; }
+    .badge { display: inline-block; background: var(--pass-bg); color: var(--pass-text); padding: 6px 16px; border-radius: 20px; font-size: 0.9em; margin: 5px; font-weight: bold; border: 1px solid var(--pass-text); }
+    .btn { display: inline-block; background: var(--primary); color: #fff; padding: 14px 35px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 10px 5px; transition: 0.3s; border: none; cursor: pointer; }
+    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-accent { background: var(--accent); }
+    section { margin: 40px 0; }
+    h2 { border-right: 5px solid var(--accent); padding-right: 12px; color: var(--primary); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; background: var(--calc-bg); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    th, td { padding: 14px; border: 1px solid #ddd; text-align: center; }
+    th { background: var(--primary); color: #fff; }
+    .errata td:nth-child(2) { background: var(--fail-bg); color: var(--fail-text); font-weight: bold; }
+    .errata td:nth-child(3) { background: var(--pass-bg); color: var(--pass-text); font-weight: bold; }
+    .info-box { background: var(--input-bg); border: 1px solid #D9D9D9; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    .info-box code { background: #fff; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 1.1em; color: var(--primary); font-weight: bold; }
+    footer { text-align: center; padding: 40px 0; font-size: 0.9em; color: #666; border-top: 1px solid #eee; margin-top: 60px; }
+    .qr-section { text-align: center; padding: 30px; background: var(--calc-bg); border-radius: 12px; margin: 30px 0; }
+    .qr-section img { max-width: 200px; border: 4px solid var(--primary); border-radius: 8px; }
+    @media (max-width: 600px) { h1 { font-size: 1.6em; } table { font-size: 0.85em; } th, td { padding: 10px; } .btn { display: block; width: 100%; margin: 10px 0; text-align: center; } }
+    </style></head><body>
+    <header>
+        <h1>🧪 همراه دیجیتال آزمایشگاه فناوری بتن</h1>
+        <p class="subtitle">ابزار جامع محاسبات، کنترل کیفیت و خطایابی آزمایش‌های بتن (مطابق ASTM و ISIRI)</p>
+        <span class="badge">نسخه v1.0.0</span> <span class="badge">سازگار با Excel 2016+</span> <span class="badge">بدون ماکرو</span><br>
+        <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases" class="btn">⬇️ دانلود فایل اکسل</a>
+        <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion" class="btn btn-accent">📂 مخزن گیت‌هاب</a>
+    </header>
+    <section id="errata">
+        <h2>🛠 اِراتای متعهدشده (اصلاحات نسبت به چاپ اول کتاب)</h2>
+        <table class="errata">
+            <thead><tr><th>آزمون</th><th>مقدار در چاپ کتاب</th><th>مقدار مرجع و صحیح</th><th>علت اصلاح</th></tr></thead>
+            <tbody>
+                <tr><td>1-2 (رطوبت)</td><td>پایه تر</td><td>پایه خشک</td><td>مغایر ASTM C566</td></tr>
+                <tr><td>1-4ج (چگالی)</td><td>OD=1.51</td><td>≈2.6x</td><td>جابه‌جایی A/S</td></tr>
+                <tr><td>1-6 (SE)</td><td>ماسه/رس</td><td>ماسه/(ماسه+رس)</td><td>متن مغایر نمونه</td></tr>
+                <tr><td>2-4 (ملات)</td><td>11.9</td><td>≈20.5</td><td>ضریب kgf/مساحت</td></tr>
+                <tr><td>4-3 (خمشی)</td><td>33.466</td><td>≈7.5</td><td>خطای فاکتور/واحد</td></tr>
+            </tbody>
+        </table>
+    </section>
+    <section id="download">
+        <h2>📥 دانلود و دسترسی</h2>
+        <div class="info-box">
+            <strong>🔐 رمز عبور محافظت:</strong> شیت‌های محاسباتی جهت جلوگیری از بهم‌ریختگی فرمول‌ها محافظت شده‌اند.<br>
+            <strong>رمز عبور:</strong> <code>ConcreteLab2026!</code>
+        </div>
+    </section>
+    <section id="qr"><h2>📱 اسکن QR Code</h2>
+        <div class="qr-section"><img src="assets/qr_code.png" alt="QR Code"><p>این QR Code را می‌توانید در انتهای کتاب (پیوست ج) قرار دهید.</p></div>
+    </section>
+    <footer><p>© 2026 همراه دیجیتال آزمایشگاه بتن | توسعه‌یافته بر اساس اصول Semantic Versioning</p></footer>
+    </body></html>
