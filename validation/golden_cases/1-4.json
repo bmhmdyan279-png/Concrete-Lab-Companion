@@ -1,0 +1,19 @@
+{
+  "test_id": "1-4",
+  "test_name": "چگالی سنگدانه ریز",
+  "standard": "ASTM C128",
+  "inputs": {
+    "method": "weighing",
+    "A_g": 500,
+    "S_g": 510,
+    "B_g": 1000,
+    "C_g": 1300
+  },
+  "expected": {
+    "OD": 2.63,
+    "SSD": 2.68,
+    "App": 2.78,
+    "absorption_percent": 2.0
+  },
+  "tolerance": 0.01
+}

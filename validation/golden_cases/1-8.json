@@ -1,0 +1,13 @@
+{
+  "test_id": "1-8",
+  "test_name": "جذب آب سنگدانه",
+  "standard": "ASTM C127",
+  "inputs": {
+    "W1_g": 1050,
+    "W2_g": 1000
+  },
+  "expected": {
+    "absorption_percent": 5.0
+  },
+  "tolerance": 0.1
+}

@@ -1,0 +1,17 @@
+{
+  "test_id": "1-3",
+  "test_name": "چگالی سنگدانه درشت",
+  "standard": "ASTM C127",
+  "inputs": {
+    "A_g": 1000,
+    "B_g": 1050,
+    "C_g": 650
+  },
+  "expected": {
+    "OD": 2.5,
+    "SSD": 2.625,
+    "App": 2.857,
+    "absorption_percent": 5.0
+  },
+  "tolerance": 0.001
+}

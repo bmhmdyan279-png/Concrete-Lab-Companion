@@ -1,19 +1,25 @@
 {
   "test_id": "2-4",
-  "test_name": "مدول الاستیسیته بتن",
-  "standard": "ASTM C469",
-  "clause": "8.1",
-  "formula": "E = (σ2 - σ1) / (ε2 - ε1) × 1000",
+  "test_name": "مقاومت ملات سیمان",
+  "standard": "EN 196-1",
   "inputs": {
-    "load_40_kN": 120,
-    "load_kN": 300,
-    "strain_40": 0.00005,
-    "strain_load": 0.00025,
-    "area_mm2": 15000
+    "flexural_loads_kgf": [
+      180,
+      185,
+      190
+    ],
+    "compressive_loads_kgf": [
+      3300,
+      3350,
+      3400,
+      3320,
+      3380,
+      3340
+    ]
   },
   "expected": {
-    "elastic_modulus_gpa": 28.5
+    "flexural_strength_mpa": 5.3,
+    "compressive_strength_mpa": 20.5
   },
-  "tolerance": 0.5,
-  "unit": "GPa"
+  "tolerance": 0.1
 }

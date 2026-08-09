@@ -1,0 +1,14 @@
+{
+  "test_id": "4-2",
+  "test_name": "مقاومت کششی (برزیلی)",
+  "standard": "ASTM C496",
+  "inputs": {
+    "d_mm": 150,
+    "L_mm": 300,
+    "P_N": 358000
+  },
+  "expected": {
+    "tensile_strength_mpa": 5.07
+  },
+  "tolerance": 0.01
+}

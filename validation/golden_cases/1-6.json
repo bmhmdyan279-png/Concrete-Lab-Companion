@@ -1,0 +1,13 @@
+{
+  "test_id": "1-6",
+  "test_name": "معادل ماسه",
+  "standard": "ASTM D2419",
+  "inputs": {
+    "sand_reading_mm": 90,
+    "clay_reading_mm": 10
+  },
+  "expected": {
+    "SE": 90
+  },
+  "tolerance": 1
+}

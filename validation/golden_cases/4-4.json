@@ -1,0 +1,17 @@
+{
+  "test_id": "4-4",
+  "test_name": "سرعت پالس اولتراسونیک",
+  "standard": "ASTM C597",
+  "inputs": {
+    "L_m": 0.5,
+    "T_us": [
+      120,
+      122,
+      121
+    ]
+  },
+  "expected": {
+    "velocity_km_s": 4.13
+  },
+  "tolerance": 0.01
+}

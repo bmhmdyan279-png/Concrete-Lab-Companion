@@ -1,0 +1,16 @@
+{
+  "test_id": "3-3",
+  "test_name": "وزن واحد حجمی بتن",
+  "standard": "ASTM C138",
+  "inputs": {
+    "m1_g": 5000,
+    "m2_g": 25000,
+    "V_cm3": 10000,
+    "D_theoretical": 2.4
+  },
+  "expected": {
+    "unit_weight_kg_m3": 2000,
+    "deviation_percent": 16.7
+  },
+  "tolerance": 0.1
+}

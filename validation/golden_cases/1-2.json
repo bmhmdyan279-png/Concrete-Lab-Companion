@@ -1,17 +1,13 @@
 {
   "test_id": "1-2",
-  "test_name": "مقاومت فشاری بتن",
-  "standard": "ASTM C39",
-  "clause": "8.2",
-  "formula": "f'c = P / A",
+  "test_name": "رطوبت سنگدانه",
+  "standard": "ASTM C566",
   "inputs": {
-    "load_kN": 450,
-    "area_mm2": 15000
+    "W1_g": 1050,
+    "W2_g": 1000
   },
   "expected": {
-    "fpc_mpa": 30.0
+    "moisture_percent": 5.0
   },
-  "tolerance": 0.1,
-  "unit": "MPa",
-  "notes": "P بر حسب kN، A بر حسب mm²"
+  "tolerance": 0.1
 }

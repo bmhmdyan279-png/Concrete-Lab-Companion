@@ -1,0 +1,38 @@
+{
+  "test_id": "1-1",
+  "test_name": "دانه‌بندی سنگدانه",
+  "standard": "ASTM C136",
+  "inputs": {
+    "M_g": 500,
+    "sieves": [
+      {
+        "size": 4.75,
+        "retained": 50
+      },
+      {
+        "size": 2.36,
+        "retained": 100
+      },
+      {
+        "size": 1.18,
+        "retained": 150
+      },
+      {
+        "size": 0.6,
+        "retained": 100
+      },
+      {
+        "size": 0.3,
+        "retained": 75
+      },
+      {
+        "size": 0.15,
+        "retained": 25
+      }
+    ]
+  },
+  "expected": {
+    "FM": 2.85
+  },
+  "tolerance": 0.01
+}

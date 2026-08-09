@@ -1,0 +1,15 @@
+{
+  "test_id": "3-2",
+  "test_name": "آب‌انداختگی بتن",
+  "standard": "ASTM C232",
+  "inputs": {
+    "h1_mm": 200,
+    "h2_mm": 190,
+    "G_percent": 2
+  },
+  "expected": {
+    "bleeding_percent": 5.0,
+    "corrected_percent": 3.0
+  },
+  "tolerance": 0.1
+}

@@ -1,0 +1,14 @@
+{
+  "test_id": "4-1",
+  "test_name": "مقاومت فشاری بتن",
+  "standard": "ASTM C39",
+  "inputs": {
+    "shape": "cylinder",
+    "d_mm": 150,
+    "F_kN": 715
+  },
+  "expected": {
+    "strength_mpa": 40.4
+  },
+  "tolerance": 0.1
+}

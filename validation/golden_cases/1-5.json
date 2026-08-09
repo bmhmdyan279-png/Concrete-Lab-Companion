@@ -1,0 +1,16 @@
+{
+  "test_id": "1-5",
+  "test_name": "وزن واحد حجمی",
+  "standard": "ASTM C138",
+  "inputs": {
+    "T_g": 5000,
+    "G_g": 25000,
+    "V_cm3": 10000,
+    "S": 2.65
+  },
+  "expected": {
+    "unit_weight_kg_m3": 2000,
+    "voids_percent": 24.5
+  },
+  "tolerance": 0.1
+}

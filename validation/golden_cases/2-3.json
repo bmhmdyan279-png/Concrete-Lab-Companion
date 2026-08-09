@@ -1,0 +1,17 @@
+{
+  "test_id": "2-3",
+  "test_name": "زمان گیرش سیمان",
+  "standard": "ASTM C191",
+  "inputs": {
+    "E_min": 10,
+    "H_min": 120,
+    "C_mm": 30,
+    "D_mm": 25,
+    "final_setting_min": 240
+  },
+  "expected": {
+    "initial_setting_min": 95,
+    "final_setting_min_rounded": 240
+  },
+  "tolerance": 1
+}

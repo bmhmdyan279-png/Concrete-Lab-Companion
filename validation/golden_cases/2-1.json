@@ -1,0 +1,14 @@
+{
+  "test_id": "2-1",
+  "test_name": "چگالی بتن تازه",
+  "standard": "ASTM C138",
+  "inputs": {
+    "Ma_g": 5000,
+    "Mt_g": 25000,
+    "V_cm3": 10000
+  },
+  "expected": {
+    "density_kg_m3": 2000
+  },
+  "tolerance": 0.1
+}

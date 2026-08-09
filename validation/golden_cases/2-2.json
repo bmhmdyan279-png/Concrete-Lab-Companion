@@ -1,0 +1,13 @@
+{
+  "test_id": "2-2",
+  "test_name": "ویکات (گیرش سیمان)",
+  "standard": "ASTM C191",
+  "inputs": {
+    "cement_g": 500,
+    "water_g": 135
+  },
+  "expected": {
+    "water_cement_ratio": 0.27
+  },
+  "tolerance": 0.01
+}

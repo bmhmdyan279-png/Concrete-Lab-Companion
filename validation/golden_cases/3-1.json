@@ -1,0 +1,12 @@
+{
+  "test_id": "3-1",
+  "test_name": "اسلامپ",
+  "standard": "ASTM C143",
+  "inputs": {
+    "h_mm": 200
+  },
+  "expected": {
+    "slump_mm": 100
+  },
+  "tolerance": 1
+}

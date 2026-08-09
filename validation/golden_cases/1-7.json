@@ -1,0 +1,17 @@
+{
+  "test_id": "1-7",
+  "test_name": "شاخص‌های شکل سنگدانه",
+  "standard": "ASTM D4791",
+  "inputs": {
+    "W_total": 100,
+    "W_elongated": 10,
+    "W_flaky": 5,
+    "W_both": 2
+  },
+  "expected": {
+    "elongation_percent": 10.0,
+    "flakiness_percent": 5.0,
+    "both_percent": 2.0
+  },
+  "tolerance": 0.1
+}
