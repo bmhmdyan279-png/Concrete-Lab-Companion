@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "اگر از این ابزار در پژوهش یا آموزش استفاده می‌کنید، لطفاً به شکل زیر ارجاع دهید."
+title: "Concrete Lab Companion —  پیوست دیجیتال کتاب فناوری بتن در آزمایشگاه"
+type: software
+authors:
+  - family-names: "Mohammadian"
+    given-names: "Behnam"
+    orcid: "soon"
+version: "soon"
+doi: "soon"
+date-released: soon
+url: "https://github.com/bmhmdyan279-png/Concrete-Lab-Companion"
+license: CC-BY-NC-4.0
+keywords:
+  - concrete
+  - laboratory
+  - excel
+  - quality-assurance
+  - civil-engineering
+preferred-citation:
+  type: book
+  title: "فناوری بتن در آزمایشگاه"
+  authors:
+    - family-names: "Mohammadian"
+      given-names: "Behnam"
+  year: 2026

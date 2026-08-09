@@ -1,0 +1,93 @@
+# ═══════════════════════════════════════════
+# SINGLE SOURCE OF TRUTH — خطاهای کتاب
+# README، Landing Page، Excel، QA Report
+# همگی از این فایل تولید می‌شوند.
+# ═══════════════════════════════════════════
+
+errata:
+  - id: "1-2"
+    type: "formula"
+    title: "خطای فرمول مقاومت فشاری"
+    book_value: "f'c = P × A"
+    reference_value: "f'c = P / A"
+    standard: "ASTM C39"
+    clause: "8.2"
+    status: "confirmed"
+    severity: "critical"
+
+  - id: "1-4ج"
+    type: "physical"
+    title: "خطای واحد اندازه‌گیری اسلامپ"
+    book_value: "cm"
+    reference_value: "mm"
+    standard: "ASTM C143"
+    clause: "7.1"
+    status: "confirmed"
+    severity: "moderate"
+
+  - id: "1-5"
+    type: "formula"
+    title: "خطای محاسبه جذب آب"
+    book_value: "WA = (W_ssd - W_od) / W_ssd × 100"
+    reference_value: "WA = (W_ssd - W_od) / W_od × 100"
+    standard: "ASTM C127"
+    clause: "9.3"
+    status: "pending_validation"
+    severity: "moderate"
+
+  - id: "1-6"
+    type: "physical"
+    title: "خطای دمای نگهداری نمونه"
+    book_value: "23 ± 5 °C"
+    reference_value: "23 ± 2 °C"
+    standard: "ASTM C31"
+    clause: "6.2"
+    status: "pending_validation"
+    severity: "low"
+
+  - id: "2-4"
+    type: "formula"
+    title: "خطای محاسبه مدول الاستیسیته"
+    book_value: "E = σ / ε (بدون تبدیل واحد)"
+    reference_value: "E = (σ × 1000) / ε  [MPa]"
+    standard: "ASTM C469"
+    clause: "8.1"
+    status: "confirmed"
+    severity: "critical"
+
+  - id: "4-1"
+    type: "formula"
+    title: "خطای نسبت آب به سیمان"
+    book_value: "w/c بدون در نظر گرفتن رطوبت سنگدانه"
+    reference_value: "w/c با اصلاح رطوبت SSD"
+    standard: "ACI 211.1"
+    clause: "5.3"
+    status: "pending_validation"
+    severity: "moderate"
+
+  - id: "4-2"
+    type: "physical"
+    title: "خطای زمان اختلاط"
+    book_value: "3 دقیقه"
+    reference_value: "5 دقیقه (یا تا یکنواختی)"
+    standard: "ASTM C192"
+    clause: "7.4"
+    status: "pending_validation"
+    severity: "low"
+
+  - id: "4-3"
+    type: "formula"
+    title: "خطای محاسبه مقاومت مشخصه"
+    book_value: "f'cr = f'c + 1.34s"
+    reference_value: "f'cr = f'c + 1.34s  AND  f'cr = f'c + 2.33s - 3.5 (بزرگتر)"
+    standard: "ACI 211.1"
+    clause: "5.2.2"
+    status: "confirmed"
+    severity: "critical"
+
+# ─── خلاصه ───
+summary:
+  total_claimed: 8
+  confirmed_in_validation_data: 4
+  pending_validation: 4
+  note: "README و Landing Page باید فقط confirmed‌ها را نشان دهند یا وضعیت را مشخص کنند."

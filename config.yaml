@@ -1,0 +1,61 @@
+# ═══════════════════════════════════════════
+# Concrete Lab Companion — Central Config
+# Single Source of Truth for build settings
+# ═══════════════════════════════════════════
+
+project:
+  name: "Concrete Lab Companion"
+  product_file: "Concrete_Lab_Companion"
+  version: "1.0.0"
+  build_date: "2026-08-10"
+  language: "fa"
+  direction: "RTL"
+
+password:
+  sheet_protection: "ConcreteLab2026!"
+  note: "عمدی و عمومی — فقط برای جلوگیری از ویرایش تصادفی. مکانیزم امنیتی نیست."
+
+fonts:
+  primary_fa: "B Nazanin"
+  fallback_fa: "Tahoma"
+  numbers: "Calibri"
+  web_fa: "Vazirmatn"
+
+colors:
+  input_fill: "FFFDE7"       # زرد کم‌رنگ
+  calc_fill: "F5F5F5" # خاکستری
+  pass_fill: "E8F5E9"        # سبز
+  fail_fill: "FFEBEE"        # قرمز
+  header_fill: "1565C0"      # آبی
+  header_font: "FFFFFF"
+
+sheets:
+  total_expected: 20
+  implemented: 12
+  key_sheets:
+    - "00_راهنما"
+    - "01_اطلاعات_آزمون"
+    - "02_آزمایش_1-2"
+    - "03_آزمایش_2-4"
+    - "04_داشبورد"
+    - "05_QA_Test"
+    - "06_خطاها_هشدارها"
+    - "_Reference_DB"
+    - "_Standards"
+    - "_Validation_Data"
+    - "_Glossary"
+    - "_Materials_DB"
+
+standards:
+  primary: "ASTM"
+  secondary: "ISIRI"
+  traceability_required: true
+
+validation:
+  errata_file: "validation/errata.yaml"
+  golden_cases_dir: "validation/golden_cases/"
+  tolerance_default: 0.1
+
+landing:
+  url: "https://bmhmdyan279-png.github.io/Concrete-Lab-Companion/"
+  custom_domain: ""  # TODO: add custom domain for QR safety

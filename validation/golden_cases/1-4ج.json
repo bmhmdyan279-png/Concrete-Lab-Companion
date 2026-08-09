@@ -1,0 +1,15 @@
+{
+  "test_id": "1-4ج",
+  "test_name": "اسلامپ بتن — واحد اندازه‌گیری",
+  "standard": "ASTM C143",
+  "clause": "7.1",
+  "formula": "slump_mm = reading × 10",
+  "inputs": {
+    "reading_cm": 12
+  },
+  "expected": {
+    "slump_mm": 120
+  },
+  "tolerance": 1,
+  "unit": "mm"
+}

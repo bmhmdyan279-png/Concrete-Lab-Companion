@@ -1,0 +1,16 @@
+{
+  "test_id": "4-3",
+  "test_name": "مقاومت مشخصه طراحی",
+  "standard": "ACI 211.1",
+  "clause": "5.2.2",
+  "formula": "f'cr = max(f'c + 1.34s, f'c + 2.33s - 3.5)",
+  "inputs": {
+    "fpc_mpa": 25,
+    "std_dev_mpa": 4.0
+  },
+  "expected": {
+    "fpcr_mpa": 31.8
+  },
+  "tolerance": 0.1,
+  "unit": "MPa"
+}

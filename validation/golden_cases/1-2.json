@@ -1,0 +1,17 @@
+{
+  "test_id": "1-2",
+  "test_name": "مقاومت فشاری بتن",
+  "standard": "ASTM C39",
+  "clause": "8.2",
+  "formula": "f'c = P / A",
+  "inputs": {
+    "load_kN": 450,
+    "area_mm2": 15000
+  },
+  "expected": {
+    "fpc_mpa": 30.0
+  },
+  "tolerance": 0.1,
+  "unit": "MPa",
+  "notes": "P بر حسب kN، A بر حسب mm²"
+}

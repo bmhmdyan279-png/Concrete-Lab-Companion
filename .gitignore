@@ -1,6 +1,36 @@
-venv/
+# Python
 __pycache__/
-*.pyc
-~$*.xlsx
-.DS_Store
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE
 .idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Excel output
+*.xlsx
+*.xlsm
+*.xls
+
+# Environment
+.env
+.venv/
+venv/
+
+# Logs
+*.log
+
+# Temporary
+tmp/
+temp/

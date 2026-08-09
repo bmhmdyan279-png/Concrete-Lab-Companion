@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concrete Lab Companion — پیوست دیجیتال کتاب فناوری بتن</title>
+    <meta name="description" content="ماشین‌حساب آزمایشگاهی بتن، بدون ماکرو، با اعتبارسنجی خودکار. ۲۰ آزمایش استاندارد ASTM/ISIRI.">
+
+    <!-- Open Graph / Social Preview -->
+    <meta property="og:title" content="Concrete Lab Companion">
+    <meta property="og:description" content="پیوست دیجیتال کتاب فناوری بتن — ۲۰ آزمایش، بدون VBA، اعتبارسنجی خودکار">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bmhmdyan279-png.github.io/Concrete-Lab-Companion/">
+    <meta property="og:image" content="https://bmhmdyan279-png.github.io/Concrete-Lab-Companion/assets/og-card.png">
+    <meta property="og:locale" content="fa_IR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Concrete Lab Companion">
+    <meta name="twitter:description" content="پیوست دیجیتال کتاب فناوری بتن">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap');
+
+        :root {
+            --primary: #1565C0;
+            --primary-dark: #0D47A1;
+            --accent: #FF6F00;
+            --success: #2E7D32;
+            --danger: #C62828;
+            --bg: #FAFAFA;
+            --card-bg: #FFFFFF;
+            --text: #212121;
+            --text-secondary: #616161;
+            --border: #E0E0E0;
+            --input-yellow: #FFFDE7;
+            --calc-gray: #F5F5F5;
+            --pass-green: #E8F5E9;
+            --fail-red: #FFEBEE;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            direction: rtl;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 60px 20px 40px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; }
+        .hero .subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 20px; }
+        .hero .badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 25px; }
+        .hero .badge {
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-github { background: #24292e; color: white; }
+
+        /* Sections */
+        section { padding: 50px 0; }
+        section:nth-child(even) { background: var(--card-bg); }
+        h2 { font-size: 1.6rem; font-weight: 900; color: var(--primary-dark); margin-bottom: 25px; text-align: center; }
+
+        /* Cards */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: box-shadow 0.2s;
+        }
+        .card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .card h3 { font-size: 1.1rem; margin-bottom: 10px; color: var(--primary); }
+        .card p { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* Errata Table */
+        .errata-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+        .errata-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px 10px;
+            text-align: right;
+        }
+        .errata-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+        .errata-table tr:hover { background: #F5F5F5; }
+        .status-confirmed { color: var(--success); font-weight: 700; }
+        .status-pending { color: var(--accent); font-weight: 700; }
+
+        /* Hash Section */
+        .hash-box {
+            background: var(--calc-gray);
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .hash-box code {
+            display: block;
+            background: var(--text);
+            color: #4CAF50;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+            direction: ltr;
+            text-align: center;
+            margin: 12px 0;
+            cursor: pointer;
+            position: relative;
+        }
+        .hash-box code:hover::after {
+            content: '📋 کلیک برای کپی';
+            position: absolute;
+            top: -30px;
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--text);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .copy-btn:hover { background: var(--primary-dark); }
+        .copy-feedback { color: var(--success); font-size: 0.85rem; display: none; margin-top: 6px; }
+
+        /* Guide Steps */
+        .steps { counter-reset: step; }
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            align-items: flex-start;
+        }
+        .step-num {
+            counter-increment: step;
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+        .step-content h4 { font-size: 1rem; margin-bottom: 4px; }
+        .step-content p { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* Compatibility */
+        .compat-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .compat-table th { background: var(--primary); color: white; padding: 10px; }
+        .compat-table td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; }
+        .compat-yes { color: var(--success); }
+        .compat-untested { color: var(--accent); }
+
+        /* Footer */
+        footer {
+            background: var(--text);
+            color: #BDBDBD;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        footer a { color: #90CAF9; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.6rem; }
+            .btn { padding: 12px 24px; font-size: 0.95rem; }
+            .card-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+    <div class="container">
+        <h1>🧪 Concrete Lab Companion</h1>
+        <p class="subtitle">پیوست دیجیتال کتاب «فناوری بتن» — ماشین‌حساب + اعتبارسنجی + QA</p>
+        <div class="badges">
+            <span class="badge">۲۰ آزمایش</span>
+            <span class="badge">بدون VBA</span>
+            <span class="badge">ASTM / ISIRI</span>
+            <span class="badge">Excel Desktop / Web</span>
+        </div>
+        <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest" class="btn btn-primary">
+            📥 دانلود آخرین نسخه
+        </a>
+        <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion" class="btn btn-github">
+            ⭐ مخزن GitHub
+        </a>
+    </div>
+</header>
+
+<!-- ═══ WHAT IT DOES ═══ -->
+<section>
+    <div class="container">
+        <h2>این ابزار چه کاری انجام می‌دهد؟</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3>🧮 محاسبه دقیق</h3>
+                <p>فرمول‌های استاندارد برای ۲۰ آزمایش بتن، با اعتبارسنجی ورودی و پیام خطای فارسی.</p>
+            </div>
+            <div class="card">
+                <h3>🔍 اعتبارسنجی کتاب</h3>
+                <p>شناسایی و ثبت خطاهای محاسباتی/فیزیکی پیش‌نویس کتاب با ارجاع به استاندارد.</p>
+            </div>
+            <div class="card">
+                <h3>🛡️ بدون ماکرو</h3>
+                <p>فقط فرمول Excel. روی Desktop، Excel Online و موبایل بدون نیاز به فعال‌سازی ماکرو.</p>
+            </div>
+            <div class="card">
+                <h3>🎨 رنگ‌بندی هوشمند</h3>
+                <p>🟡 ورودی | ⬜ محاسبه | 🟢 قبولی | 🔴 خطا — بدون نیاز به آموزش.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ ERRATA TABLE ═══ -->
+<section>
+    <div class="container">
+        <h2>📋 خطاهای شناسایی‌شده در کتاب</h2>
+        <p style="text-align:center; color:var(--text-secondary); margin-bottom:15px;">
+            ⚠️ فقط ۴ مورد در Validation Data تأیید شده‌اند. بقیه در انتظار بررسی هستند.
+        </p>
+        <table class="errata-table">
+            <thead>
+                <tr>
+                    <th>شناسه</th>
+                    <th>نوع</th>
+                    <th>شرح</th>
+                    <th>استاندارد</th>
+                    <th>وضعیت</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>۱-۲</td>
+                    <td>فرمول</td>
+                    <td>خطای فرمول مقاومت فشاری</td>
+                    <td>ASTM C39</td>
+                    <td class="status-confirmed">✅ تأییدشده</td>
+                </tr>
+                <tr>
+                    <td>۱-۴ج</td>
+                    <td>فیزیکی</td>
+                    <td>خطای واحد اندازه‌گیری اسلامپ</td>
+                    <td>ASTM C143</td>
+                    <td class="status-confirmed">✅ تأییدشده</td>
+                </tr>
+                <tr>
+                    <td>۱-۵</td>
+                    <td>فرمول</td>
+                    <td>خطای محاسبه جذب آب</td>
+                    <td>ASTM C127</td>
+                    <td class="status-pending">⏳ در انتظار</td>
+                </tr>
+                <tr>
+                    <td>۱-۶</td>
+                    <td>فیزیکی</td>
+                    <td>خطای دمای نگهداری نمونه</td>
+                    <td>ASTM C31</td>
+                    <td class="status-pending">⏳ در انتظار</td>
+                </tr>
+                <tr>
+                    <td>۲-۴</td>
+                    <td>فرمول</td>
+                    <td>خطای محاسبه مدول الاستیسیته</td>
+                    <td>ASTM C469</td>
+                    <td class="status-confirmed">✅ تأییدشده</td>
+                </tr>
+                <tr>
+                    <td>۴-۱</td>
+                    <td>فرمول</td>
+                    <td>خطای نسبت آب به سیمان</td>
+                    <td>ACI 211.1</td>
+                    <td class="status-pending">⏳ در انتظار</td>
+                </tr>
+                <tr>
+                    <td>۴-۲</td>
+                    <td>فیزیکی</td>
+                    <td>خطای زمان اختلاط</td>
+                    <td>ASTM C192</td>
+                    <td class="status-pending">⏳ در انتظار</td>
+                </tr>
+                <tr>
+                    <td>۴-۳</td>
+                    <td>فرمول</td>
+                    <td>خطای محاسبه مقاومت مشخصه</td>
+                    <td>ACI 211.1</td>
+                    <td class="status-confirmed">✅ تأییدشده</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ═══ DOWNLOAD & HASH ═══ -->
+<section>
+    <div class="container">
+        <h2>📥 دانلود و تأیید اصالت</h2>
+
+        <div style="text-align:center; margin-bottom:30px;">
+            <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest" class="btn btn-primary">
+                📥 دانلود Concrete_Lab_Companion_v1.0.0.xlsx
+            </a>
+        </div>
+
+        <div class="hash-box">
+            <h3 style="margin-bottom:10px;">🔐 تأیید یکپارچگی فایل (SHA-256)</h3>
+            <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:10px;">
+                پس از دانلود، هش فایل را با مقدار زیر مقایسه کنید. تطابق = فایل دست‌نخورده.
+            </p>
+            <code id="hashValue" onclick="copyHash()">هش_واقعی_خود_را_اینجا_بگذارید</code>
+            <button class="copy-btn" onclick="copyHash()">📋 کپی هش</button>
+            <p class="copy-feedback" id="copyFeedback">✅ کپی شد!</p>
+        </div>
+
+        <div style="background:var(--calc-gray); padding:16px; border-radius:8px; direction:ltr; text-align:left;">
+            <strong>PowerShell:</strong>
+            <code style="display:block; margin-top:8px; padding:10px; background:#263238; color:#4CAF50; border-radius:6px; font-size:0.85rem;">
+                Get-FileHash .\Concrete_Lab_Companion_v1.0.0.xlsx -Algorithm SHA256
+            </code>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ USAGE GUIDE ═══ -->
+<section>
+    <div class="container">
+        <h2>📖 راهنمای استفاده گام‌به‌گام</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">۱</div>
+                <div class="step-content">
+                    <h4>دانلود و باز کردن</h4>
+                    <p>فایل xlsx را دانلود کنید. در Excel Desktop، Excel Online یا اپلیکیشن موبایل باز کنید. <strong>نیازی به فعال‌سازی ماکرو نیست.</strong></p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">۲</div>
+                <div class="step-content">
+                    <h4>ورود داده‌ها</h4>
+                    <p>سلول‌های <span style="background:var(--input-yellow); padding:2px 8px; border-radius:4px;">زرد</span> ورودی هستند. مقادیر را وارد کنید. سلول‌های خاکستری خودکار محاسبه می‌شوند.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">۳</div>
+                <div class="step-content">
+                    <h4>بررسی نتیجه</h4>
+                    <p>نتیجه در سلول‌های خروجی نمایش داده می‌شود. <span style="background:var(--pass-green); padding:2px 8px; border-radius:4px;">سبز = قبولی</span> | <span style="background:var(--fail-red); padding:2px 8px; border-radius:4px;">قرمز = خطا</span></p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">۴</div>
+                <div class="step-content">
+                    <h4>رمز شیت‌ها</h4>
+                    <p>رمز: <code style="direction:ltr;">ConcreteLab2026!</code> — فقط برای جلوگیری از ویرایش تصادفی فرمول‌ها. عمومی و غیرمحرمانه.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ COMPATIBILITY ═══ -->
+<section>
+    <div class="container">
+        <h2>💻 سازگاری</h2>
+        <table class="compat-table">
+            <thead>
+                <tr>
+                    <th>محیط</th>
+                    <th>باز شدن</th>
+                    <th>فرمول‌ها</th>
+                    <th>نمودار</th>
+                    <th>محافظت شیت</th>
+                    <th>وضعیت</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Excel 365 Windows</td>
+                    <td class="compat-yes">✅</td>
+                    <td class="compat-yes">✅</td>
+                    <td class="compat-yes">✅</td>
+                    <td class="compat-yes">✅</td>
+                    <td class="compat-yes">تأییدشده</td>
+                </tr>
+                <tr>
+                    <td>Excel Online</td>
+                    <td class="compat-yes">✅</td>
+                    <td class="compat-yes">✅</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">در انتظار تست</td>
+                </tr>
+                <tr>
+                    <td>Excel Android</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">در انتظار تست</td>
+                </tr>
+                <tr>
+                    <td>Excel iOS</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">❓</td>
+                    <td class="compat-untested">در انتظار تست</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ═══ LINKS ═══ -->
+<section>
+    <div class="container">
+        <h2>🔗 لینک‌های مفید</h2>
+        <div class="card-grid">
+            <div class="card" style="text-align:center;">
+                <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion" style="color:var(--primary); font-weight:700; text-decoration:none;">
+                    ⭐ مخزن GitHub
+                </a>
+            </div>
+            <div class="card" style="text-align:center;">
+                <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/blob/main/CHANGELOG.md" style="color:var(--primary); font-weight:700; text-decoration:none;">
+                    📝 تغییرات نسخه‌ها
+                </a>
+            </div>
+            <div class="card" style="text-align:center;">
+                <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/issues/new/choose" style="color:var(--primary); font-weight:700; text-decoration:none;">
+                    🐛 گزارش خطا
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+    <div class="container">
+        <p>Concrete Lab Companion v1.0.0 — ساخته‌شده با ❤️ برای دانشجویان و تکنسین‌های آزمایشگاه بتن</p>
+        <p style="margin-top:8px;">
+            <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion">GitHub</a> ·
+            <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/blob/main/LICENSE">مجوز CC BY-NC 4.0</a> ·
+            <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/blob/main/CITATION.cff">ارجاع علمی</a>
+        </p>
+        <p style="margin-top:8px; font-size:0.75rem; color:#757575;">
+            Build: 2026-08-10 | Generator: build.py v1.0
+        </p>
+    </div>
+</footer>
+
+<script>
+function copyHash() {
+    const hash = document.getElementById('hashValue').textContent;
+    navigator.clipboard.writeText(hash).then(() => {
+        const fb = document.getElementById('copyFeedback');
+        fb.style.display = 'block';
+        setTimeout(() => fb.style.display = 'none', 2000);
+    });
+}
+</script>
+
+</body>
+</html>
