@@ -2,225 +2,23 @@
 # This file is auto-generated for Git Diffing and PR Audits.
 
 === SHEET: 00_راهنما ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
 
 === SHEET: 01_اطلاعات_آزمون ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
 
-=== SHEET: 1-1_دانه‌بندی ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[C11] =IFERROR(ROUND(B11/B$8*100,1),"")
-[D11] =C11
-[E11] =IFERROR(100-D11,"")
-[I11] =E11
-[C12] =IFERROR(ROUND(B12/B$8*100,1),"")
-[D12] =IFERROR(C12+D11,C12)
-[E12] =IFERROR(100-D12,"")
-[I12] =E12
-[C13] =IFERROR(ROUND(B13/B$8*100,1),"")
-[D13] =IFERROR(C13+D12,C13)
-[E13] =IFERROR(100-D13,"")
-[I13] =E13
-[C14] =IFERROR(ROUND(B14/B$8*100,1),"")
-[D14] =IFERROR(C14+D13,C14)
-[E14] =IFERROR(100-D14,"")
-[I14] =E14
-[C15] =IFERROR(ROUND(B15/B$8*100,1),"")
-[D15] =IFERROR(C15+D14,C15)
-[E15] =IFERROR(100-D15,"")
-[I15] =E15
-[C16] =IFERROR(ROUND(B16/B$8*100,1),"")
-[D16] =IFERROR(C16+D15,C16)
-[E16] =IFERROR(100-D16,"")
-[I16] =E16
-[C17] =IFERROR(ROUND(B17/B$8*100,1),"")
-[D17] =IFERROR(C17+D16,C17)
-[E17] =IFERROR(100-D17,"")
-[I17] =E17
-[C18] =IFERROR(ROUND(B18/B$8*100,1),"")
-[D18] =IFERROR(C18+D17,C18)
-[E18] =IFERROR(100-D18,"")
-[I18] =E18
-[C19] =IFERROR(ROUND(B19/B$8*100,1),"")
-[D19] =IFERROR(C19+D18,C19)
-[E19] =IFERROR(100-D19,"")
-[I19] =E19
-[C20] =IFERROR(ROUND(B20/B$8*100,1),"")
-[D20] =IFERROR(C20+D19,C20)
-[E20] =IFERROR(100-D20,"")
-[I20] =E20
-[C21] =IFERROR(ROUND(B21/B$8*100,1),"")
-[D21] =IFERROR(C21+D20,C21)
-[E21] =IFERROR(100-D21,"")
-[I21] =E21
-[C22] =IFERROR(ROUND(B22/B$8*100,1),"")
-[D22] =IFERROR(C22+D21,C22)
-[E22] =IFERROR(100-D22,"")
-[I22] =E22
-[C23] =IFERROR(ROUND(B23/B$8*100,1),"")
-[D23] =IFERROR(C23+D22,C23)
-[E23] =IFERROR(100-D23,"")
-[I23] =E23
-[B25] =IFERROR(ROUND(ABS(B8-SUM(B11:B23))/B8*100,2),"")
-[B26] =IFERROR(SUMPRODUCT((F11:F23=TRUE)*D11:D23)/100,"")
+=== SHEET: 1-2 رطوبت ===
+[C6] =IF(B5=0,"—",ROUND((B4-B5)/B5*100,2))
 
-=== SHEET: 1-2_رطوبت ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B11] =IFERROR(ROUND((B8-B9)/B9*100,2),"—")
-
-=== SHEET: 1-3_وزن_مخصوص ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B12] =IFERROR(ROUND(B8/(B9-B10),2),"—")
-[B13] =IFERROR(ROUND(B9/(B9-B10),2),"—")
-[B14] =IFERROR(ROUND(B8/(B8-B10),2),"—")
-[B15] =IFERROR(ROUND((B9-B8)/B8*100,2),"—")
-[B17] =IF(B13<B12,"❌ خطای فیزیکی: SSD < OD","✅ معتبر")
-
-=== SHEET: 1-4_جذب_آب ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B12] =IFERROR(ROUND(B8/(B9-B10),2),"—")
-[B13] =IFERROR(ROUND(B9/(B9-B10),2),"—")
-[B15] =IFERROR(ROUND((B9-B8)/B8*100,2),"—")
-
-=== SHEET: 1-5_چگالی ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B13] =IFERROR(ROUND((B9-B8)/B10*1000,1),"—")
-[B14] =IFERROR(ROUND((B11*1000-B13)/(B11*1000)*100,1),"—")
-
-=== SHEET: 1-6_معادل_ماسه ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B11] =IFERROR(ROUNDUP(100*B8/(B8+B9),0),"—")
-
-=== SHEET: 1-7_شکل_دانه ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B12] =IFERROR(ROUND(B9/B8*100,1),"—")
-[B13] =IFERROR(ROUND(B10/B8*100,1),"—")
-
-=== SHEET: 1-8_مواد_نرم ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B11] =IFERROR(ROUND((B8-B9)/B8*100,2),"—")
-
-=== SHEET: 2-1_وزن_واحد ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B12] =IFERROR(ROUND((B9-B8)/B10,3),"—")
-
-=== SHEET: 2-2_ویکات ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B11] =IFERROR(ROUND(B9/B8*100,1),"—")
-
-=== SHEET: 2-3_گیرش ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B13] =IFERROR(ROUND(B8+(B10-B8)*(B9-25)/(B9-B11),0),"—")
-
-=== SHEET: 2-4_مقاومت_ملات ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B15] =IFERROR(ROUND(AVERAGE(B8:B13)*9.80665/1600,1),"—")
-
-=== SHEET: 3-1_اسلامپ ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B11] =IFERROR(MROUND(300-B8,5),"—")
-
-=== SHEET: 3-2_تراکم ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B11] =IFERROR(ROUND((B8-B9)/B8*100,1),"—")
-
-=== SHEET: 3-3_وزن_مخصوص_بتن ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B12] =IFERROR(ROUND((B9-B8)/B10,1),"—")
-
-=== SHEET: 4-1_فشاری ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B11] =IFERROR(ROUND(PI()/4*B8^2,1),"—")
-[B12] =IFERROR(ROUND(B9*1000/B11,1),"—")
-
-=== SHEET: 4-2_کشش_قطری ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B12] =IFERROR(ROUND(2*B10/(PI()*B8*B9),2),"—")
-
-=== SHEET: 4-3_خمشی ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B13] =IFERROR(ROUND(B11*B10/(B8*B9^2),2),"—")
-
-=== SHEET: 4-4_اولتراسونیک ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B13] =IFERROR(ROUND(B8/AVERAGE(B10:B12)*1000,1),"—")
-
-=== SHEET: 4-5_چکش_اشمیت ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B25] =IFERROR(ROUND(AVERAGE(B8:B23),1),"—")
-
-=== SHEET: 03_گزارش ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-[B20] =TEXT(MOD(SUMPRODUCT(VALUE(B11:B14)*7),99999),"00000")
-
-=== SHEET: 04_داشبورد ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-
-=== SHEET: 05_QA_Test ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-
-=== SHEET: 06_خطاها_هشدارها ===
-[A1] =HYPERLINK("#'00_راهنما'!A1", "🏠 راهنما")
-[B1] =HYPERLINK("#'03_گزارش'!A1", "📑 گزارش")
-[C1] =HYPERLINK("#'04_داشبورد'!A1", "📊 داشبورد")
-
-=== SHEET: _Reference_DB ===
-
-=== SHEET: _Standards ===
+=== SHEET: 2-4 ملات ===
+[C4] =IF(B4="","",ROUND(B4*9.80665/1600,1))
+[C5] =IF(B5="","",ROUND(B5*9.80665/1600,1))
+[C6] =IF(B6="","",ROUND(B6*9.80665/1600,1))
+[C7] =IF(B7="","",ROUND(B7*9.80665/1600,1))
+[C8] =IF(B8="","",ROUND(B8*9.80665/1600,1))
+[C9] =IF(B9="","",ROUND(B9*9.80665/1600,1))
 
 === SHEET: _Validation_Data ===
 
-=== SHEET: _Glossary ===
-
-=== SHEET: _Materials_DB ===
+=== SHEET: 03_گزارش ===
+[B4] ='1-2 رطوبت'!C6
+[C4] =IF(B4="","انجام نشده","✅")
 
