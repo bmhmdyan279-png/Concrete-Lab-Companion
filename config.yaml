@@ -31,20 +31,12 @@ colors:
 
 sheets:
   total_expected: 20
-  implemented: 12
+  implemented: 4            # تعداد واقعی فعلی
   key_sheets:
     - "00_راهنما"
-    - "01_اطلاعات_آزمون"
-    - "02_آزمایش_1-2"
-    - "03_آزمایش_2-4"
     - "04_داشبورد"
-    - "05_QA_Test"
     - "06_خطاها_هشدارها"
-    - "_Reference_DB"
-    - "_Standards"
     - "_Validation_Data"
-    - "_Glossary"
-    - "_Materials_DB"
 
 standards:
   primary: "ASTM"
