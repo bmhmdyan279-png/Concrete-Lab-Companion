@@ -1,4 +1,10 @@
 # Changelog
+
 ## [v1.0.0] - 2026-08-09
-- 🎉 Initial stable release with 20 fully formulated sheets.
-- 🛡️ Sheet protection and zero-error engine.
+### Added (اولین انتشار پایدار)
+- **معماری ۳-کاره:** پیاده‌سازی فلسفه آموزش + محاسبه + کنترل کیفیت (QA).
+- **لایه‌های پنهان:** `_Reference_DB`, `_Standards`, `_Validation_Data`, `_Glossary`.
+- **سیستم اِراتایاب:** شکار و مستندسازی ۸ خطای فیزیکی/محاسباتی چاپ اول کتاب.
+- **موتور فرمول مقاوم:** پوشش ۱۰۰٪ فرمول‌ها با `IFERROR` و `ISBLANK`.
+- **نمودار دانه‌بندی:** پیاده‌سازی Plan A (Scatter لگاریتمی) و Plan B (ستون Helper برای موبایل).
+- **حفاظت:** قفل ساختار ورک‌بوک و استفاده از فونت‌های وب‌امن (Vazirmatn).
