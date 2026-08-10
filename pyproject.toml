@@ -1,0 +1,12 @@
+[project]
+name = "concrete-lab-companion"
+version = "1.0.0"
+description = "Concrete Lab Companion - Excel Perfection Edition"
+requires-python = ">=3.9"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
