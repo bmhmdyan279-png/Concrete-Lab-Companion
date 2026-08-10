@@ -1,0 +1,34 @@
+{
+  "phase": 2,
+  "source": "GitHub Release",
+  "file": "Concrete_Lab_Companion_v1.0.0.xlsx",
+  "size_kb": 60.98046875,
+  "sheets": 31,
+  "named_ranges": 0,
+  "total_formulas": 136,
+  "hardcoded_refs": 136,
+  "circular_refs": [
+    "17_آزمایش_4-1!C11: =IF(OR(C7=\"\",C11=\"—\",C11=0),\"—\",ROUND(C7*1000/C11,1))",
+    "23_داشبورد!C7: =C7/C6"
+  ],
+  "data_validations": 35,
+  "conditional_formatting": 0,
+  "protected_sheets": 26,
+  "golden_tests": 21,
+  "calc_mode": null,
+  "issues": [
+    "نام شیت‌ها دارای '-' است (مشکل Excel Online): ['02_آزمایش_1-1', '03_آزمایش_1-2', '04_آزمایش_1-3']...",
+    "تعداد Named Ranges کم است (0). خطر ارجاعات سخت‌افزاری.",
+    "Calculation Mode: 'None' (باید auto باشد)",
+    "🚨 فرمول دایره‌ای (منتقد ۸): 17_آزمایش_4-1!C11",
+    "🚨 فرمول دایره‌ای (منتقد ۸): 23_داشبورد!C7",
+    "🚨 بحران ارجاعات سخت‌افزاری (منتقد ۵): 136 ارجاع مستقیم",
+    "Conditional Formatting = 0 - منتقد ۸"
+  ],
+  "positives": [
+    "✅ 136 فرمول برای Git Diff استخراج شد",
+    "Golden Tests: 21 فایل تست ✅",
+    "Data Validation: 35 قانون ✅",
+    "شیت‌های محافظت‌شده: 26/31"
+  ]
+}
