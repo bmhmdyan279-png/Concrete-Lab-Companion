@@ -1,80 +1,80 @@
 project:
-  name: "Concrete Lab Companion"
-  product_file: "Concrete_Lab_Companion"
-  version: "1.0.0"
-  build_date: "2026-08-10"
-  language: "fa"
-  direction: "RTL"
+  name: 'Concrete Lab Companion'
+  product_file: 'Concrete_Lab_Companion'
+  version: '1.0.0'
+  build_date: '2026-08-10'
+  language: 'fa'
+  direction: 'RTL'
 
 password:
-  sheet_protection: "ConcreteLab2026!"
-  note: "عمدی و عمومی — فقط برای جلوگیری از ویرایش تصادفی. مکانیزم امنیتی نیست."
+  sheet_protection: 'ConcreteLab2026!'
+  note: 'عمدی و عمومی — فقط برای جلوگیری از ویرایش تصادفی. مکانیزم امنیتی نیست.'
 
 fonts:
-  primary_fa: "Tahoma"
-  fallback_fa: "Segoe UI"
-  numbers: "Calibri"
-  web_fa: "Vazirmatn"
+  primary_fa: 'Tahoma'
+  fallback_fa: 'Segoe UI'
+  numbers: 'Calibri'
+  web_fa: 'Vazirmatn'
 
 colors:
-  input_fill: "FFF2CC"
-  input_border: "D9D9D9"
-  calculation_fill: "F2F2F2"
-  pass_fill: "C6EFCE"
-  pass_font: "006100"
-  warning_fill: "FCE4D6"
-  warning_font: "C00000"
-  fail_fill: "FFC7CE"
-  fail_font: "9C0006"
-  header_fill: "1F4E79"
-  header_font: "FFFFFF"
-  chart_sample: "1F4E79"
-  chart_limits: "ED7D31"
+  input_fill: 'FFF2CC'
+  input_border: 'D9D9D9'
+  calculation_fill: 'F2F2F2'
+  pass_fill: 'C6EFCE'
+  pass_font: '006100'
+  warning_fill: 'FCE4D6'
+  warning_font: 'C00000'
+  fail_fill: 'FFC7CE'
+  fail_font: '9C0006'
+  header_fill: '1F4E79'
+  header_font: 'FFFFFF'
+  chart_sample: '1F4E79'
+  chart_limits: 'ED7D31'
 
 sheets:
   total_expected: 20
   implemented: 20
   key_sheets:
-    - "00_راهنما"
-    - "01_اطلاعات_آزمون"
-    - "02_آزمایش_1-1"
-    - "03_آزمایش_1-2"
-    - "04_آزمایش_1-3"
-    - "05_آزمایش_1-4"
-    - "06_آزمایش_1-5"
-    - "07_آزمایش_1-6"
-    - "08_آزمایش_1-7"
-    - "09_آزمایش_1-8"
-    - "10_آزمایش_2-1"
-    - "11_آزمایش_2-2"
-    - "12_آزمایش_2-3"
-    - "13_آزمایش_2-4"
-    - "14_آزمایش_3-1"
-    - "15_آزمایش_3-2"
-    - "16_آزمایش_3-3"
-    - "17_آزمایش_4-1"
-    - "18_آزمایش_4-2"
-    - "19_آزمایش_4-3"
-    - "20_آزمایش_4-4"
-    - "21_آزمایش_4-5"
-    - "22_گزارش"
-    - "23_داشبورد"
-    - "24_QA_Test"
-    - "25_خطاها_هشدارها"
-    - "_Reference_DB"
-    - "_Standards"
-    - "_Validation_Data"
-    - "_Glossary"
-    - "_Materials_DB"
+    - '00_راهنما'
+    - '01_اطلاعات_آزمون'
+    - '02_آزمایش_1-1'
+    - '03_آزمایش_1-2'
+    - '04_آزمایش_1-3'
+    - '05_آزمایش_1-4'
+    - '06_آزمایش_1-5'
+    - '07_آزمایش_1-6'
+    - '08_آزمایش_1-7'
+    - '09_آزمایش_1-8'
+    - '10_آزمایش_2-1'
+    - '11_آزمایش_2-2'
+    - '12_آزمایش_2-3'
+    - '13_آزمایش_2-4'
+    - '14_آزمایش_3-1'
+    - '15_آزمایش_3-2'
+    - '16_آزمایش_3-3'
+    - '17_آزمایش_4-1'
+    - '18_آزمایش_4-2'
+    - '19_آزمایش_4-3'
+    - '20_آزمایش_4-4'
+    - '21_آزمایش_4-5'
+    - '22_گزارش'
+    - '23_داشبورد'
+    - '24_QA_Test'
+    - '25_خطاها_هشدارها'
+    - '_Reference_DB'
+    - '_Standards'
+    - '_Validation_Data'
+    - '_Glossary'
+    - '_Materials_DB'
 
 standards:
-  primary: "ASTM"
-  secondary: "ISIRI"
+  primary: 'ASTM'
+  secondary: 'ISIRI'
   traceability_required: true
 
 validation:
-  errata_file: "validation/errata.yaml"
-  golden_cases_dir: "validation/golden_cases/"
+  errata_file: 'validation/errata.yaml'
+  golden_cases_dir: 'validation/golden_cases/'
   tolerance_default: 0.1
 
 errata:

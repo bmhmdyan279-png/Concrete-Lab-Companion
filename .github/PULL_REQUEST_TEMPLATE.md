@@ -1,12 +1,10 @@
-## تغییرات
-<!-- چه چیزی تغییر کرد؟ -->
+## Checklist
 
-## مرتبط با Issue
-Closes #
+- [ ] Text and Markdown QA job is green.
+- [ ] No trailing spaces, no BOM, and final newline exists.
+- [ ] Persian content is readable and technical terms are consistent.
+- [ ] Screenshots or sample output are added if UI/output changes.
 
-## چک‌لیست
-- [ ] `python build.py` بدون خطا اجرا می‌شود
-- [ ] Golden Test Cases اضافه/به‌روزرسانی شده‌اند
-- [ ] `validation/errata.yaml` در صورت نیاز به‌روزرسانی شده
-- [ ] CHANGELOG.md به‌روزرسانی شده
-- [ ] README / Landing Page در صورت نیاز به‌روزرسانی شده‌اند
+## Notes
+
+Describe what changed and why.

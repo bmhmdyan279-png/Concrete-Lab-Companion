@@ -3,19 +3,8 @@
   "test_name": "مقاومت ملات سیمان",
   "standard": "EN 196-1",
   "inputs": {
-    "flexural_loads_kgf": [
-      180,
-      185,
-      190
-    ],
-    "compressive_loads_kgf": [
-      3300,
-      3350,
-      3400,
-      3320,
-      3380,
-      3340
-    ]
+    "flexural_loads_kgf": [180, 185, 190],
+    "compressive_loads_kgf": [3300, 3350, 3400, 3320, 3380, 3340]
   },
   "expected": {
     "flexural_strength_mpa": 5.3,

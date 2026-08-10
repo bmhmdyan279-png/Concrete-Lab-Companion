@@ -8,7 +8,7 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: "text-markdown-auto-fix-${{ github.ref }}"
+  group: 'text-markdown-auto-fix-${{ github.ref }}'
   cancel-in-progress: false
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
       - name: Install pre-commit
         run: |
@@ -48,9 +48,9 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "style: auto-fix text and markdown"
+          commit-message: 'style: auto-fix text and markdown'
           branch: bot/text-markdown-perfection
           delete-branch: true
-          title: "style: auto-fix text and markdown"
+          title: 'style: auto-fix text and markdown'
           body: |
             This PR applies automated text and markdown fixes.

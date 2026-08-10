@@ -1,83 +1,83 @@
 errata:
-  - id: "1-2"
-    type: "formula"
-    title: "خطای پایه محاسبه رطوبت"
-    book_value: "(W1-W2)/W1*100 (پایه تر)"
-    reference_value: "(W1-W2)/W2*100 (پایه خشک)"
-    standard: "ASTM C566"
-    clause: "Section 7"
-    status: "confirmed"
-    severity: "moderate"
+  - id: '1-2'
+    type: 'formula'
+    title: 'خطای پایه محاسبه رطوبت'
+    book_value: '(W1-W2)/W1*100 (پایه تر)'
+    reference_value: '(W1-W2)/W2*100 (پایه خشک)'
+    standard: 'ASTM C566'
+    clause: 'Section 7'
+    status: 'confirmed'
+    severity: 'moderate'
 
-  - id: "1-4ج"
-    type: "physical"
-    title: "خطای فیزیکی در چگالی‌ها"
-    book_value: "OD=1.51 / SSD=2.63"
-    reference_value: "OD باید نزدیک به SSD باشد"
-    standard: "ASTM C128"
-    clause: "Section 9"
-    status: "confirmed"
-    severity: "critical"
+  - id: '1-4ج'
+    type: 'physical'
+    title: 'خطای فیزیکی در چگالی‌ها'
+    book_value: 'OD=1.51 / SSD=2.63'
+    reference_value: 'OD باید نزدیک به SSD باشد'
+    standard: 'ASTM C128'
+    clause: 'Section 9'
+    status: 'confirmed'
+    severity: 'critical'
 
-  - id: "1-5"
-    type: "physical"
-    title: "خطای برچسب S"
-    book_value: "S=1600 (جرم)"
-    reference_value: "S بی‌بُعد (چگالی)"
-    standard: "ASTM C138"
-    clause: "Section 8"
-    status: "confirmed"
-    severity: "moderate"
+  - id: '1-5'
+    type: 'physical'
+    title: 'خطای برچسب S'
+    book_value: 'S=1600 (جرم)'
+    reference_value: 'S بی‌بُعد (چگالی)'
+    standard: 'ASTM C138'
+    clause: 'Section 8'
+    status: 'confirmed'
+    severity: 'moderate'
 
-  - id: "1-6"
-    type: "formula"
-    title: "خطای فرمول معادل ماسه"
-    book_value: "ماسه/رس*100"
-    reference_value: "ماسه/(ماسه+رس)*100"
-    standard: "ASTM D2419"
-    clause: "Section 9"
-    status: "confirmed"
-    severity: "critical"
+  - id: '1-6'
+    type: 'formula'
+    title: 'خطای فرمول معادل ماسه'
+    book_value: 'ماسه/رس*100'
+    reference_value: 'ماسه/(ماسه+رس)*100'
+    standard: 'ASTM D2419'
+    clause: 'Section 9'
+    status: 'confirmed'
+    severity: 'critical'
 
-  - id: "2-4"
-    type: "formula"
-    title: "خطای محاسبه مقاومت ملات"
-    book_value: "11.9 MPa"
-    reference_value: "20.5 MPa (با A=1600)"
-    standard: "EN 196-1"
-    clause: "Section 10"
-    status: "confirmed"
-    severity: "critical"
+  - id: '2-4'
+    type: 'formula'
+    title: 'خطای محاسبه مقاومت ملات'
+    book_value: '11.9 MPa'
+    reference_value: '20.5 MPa (با A=1600)'
+    standard: 'EN 196-1'
+    clause: 'Section 10'
+    status: 'confirmed'
+    severity: 'critical'
 
-  - id: "4-1"
-    type: "formula"
-    title: "خطای محاسبه مقاومت فشاری"
-    book_value: "41.5 MPa"
-    reference_value: "40.4 MPa (با A=π/4*d²)"
-    standard: "ASTM C39"
-    clause: "Section 10"
-    status: "confirmed"
-    severity: "moderate"
+  - id: '4-1'
+    type: 'formula'
+    title: 'خطای محاسبه مقاومت فشاری'
+    book_value: '41.5 MPa'
+    reference_value: '40.4 MPa (با A=π/4*d²)'
+    standard: 'ASTM C39'
+    clause: 'Section 10'
+    status: 'confirmed'
+    severity: 'moderate'
 
-  - id: "4-2"
-    type: "formula"
-    title: "خطای محاسبه مقاومت کششی"
-    book_value: "2.53 MPa"
-    reference_value: "5.07 MPa (ضریب ۲)"
-    standard: "ASTM C496"
-    clause: "Section 9"
-    status: "confirmed"
-    severity: "critical"
+  - id: '4-2'
+    type: 'formula'
+    title: 'خطای محاسبه مقاومت کششی'
+    book_value: '2.53 MPa'
+    reference_value: '5.07 MPa (ضریب ۲)'
+    standard: 'ASTM C496'
+    clause: 'Section 9'
+    status: 'confirmed'
+    severity: 'critical'
 
-  - id: "4-3"
-    type: "formula"
-    title: "خطای محاسبه مقاومت خمشی"
-    book_value: "33.466 MPa"
-    reference_value: "7.5 MPa (فرمول صحیح)"
-    standard: "ASTM C78"
-    clause: "Section 9"
-    status: "confirmed"
-    severity: "critical"
+  - id: '4-3'
+    type: 'formula'
+    title: 'خطای محاسبه مقاومت خمشی'
+    book_value: '33.466 MPa'
+    reference_value: '7.5 MPa (فرمول صحیح)'
+    standard: 'ASTM C78'
+    clause: 'Section 9'
+    status: 'confirmed'
+    severity: 'critical'
 
 summary:
   total: 8

@@ -20,6 +20,7 @@
 - commit message‌ها به فارسی یا انگلیسی، ولی واضح و descriptive
 
 ## ساختار Branch
+
 feature/add-test-3-2
 fix/hash-display
 docs/readme-update
@@ -28,7 +29,7 @@ text
 
 ## تست قبل از PR
 
-```bash
+````bash
 python build.py
 python -m pytest validation/ -v
 گزارش باگ
@@ -38,3 +39,4 @@ python -m pytest validation/ -v
 از Issue Template قابلیت استفاده کنید.
 
 </div> ```
+````

@@ -4,11 +4,7 @@
   "standard": "ASTM C597",
   "inputs": {
     "L_m": 0.5,
-    "T_us": [
-      120,
-      122,
-      121
-    ]
+    "T_us": [120, 122, 121]
   },
   "expected": {
     "velocity_km_s": 4.13
