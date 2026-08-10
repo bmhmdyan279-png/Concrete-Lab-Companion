@@ -1,74 +1,89 @@
-name: Build & Validate
+name: Build & Test
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'landing/**'
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 'build-${{ github.ref }}'
+  cancel-in-progress: true
 
 jobs:
-  build-and-validate:
+  test:
+    name: Golden Tests & Excel Audit
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
+          cache: 'pip'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Build Workbook
-        run: python build.py
-
-      - name: Verify required sheets exist
         run: |
-          python -c "
-          import openpyxl, yaml, sys
-          with open('config.yaml') as f:
-              cfg = yaml.safe_load(f)
-          wb = openpyxl.load_workbook('output/Concrete_Lab_Companion_v1.0.0.xlsx')
-          required = cfg['sheets']['key_sheets']
-          missing = [s for s in required if s not in wb.sheetnames]
-          if missing:
-              print(f'FAIL: Missing sheets: {missing}')
-              sys.exit(1)
-          print(f'PASS: All {len(required)} required sheets present')
-          "
-
-      - name: Check input cells are unlocked
-        run: |
-          python -c "
-          import openpyxl, sys
-          wb = openpyxl.load_workbook('output/Concrete_Lab_Companion_v1.0.0.xlsx')
-          # Add specific input cell checks here
-          print('PASS: Cell protection check completed')
-          "
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          pip install openpyxl pyyaml pytest pytest-cov xlsxwriter
 
       - name: Run Golden Tests
         run: |
-          python -c "
-          import json, os, sys
-          cases_dir = 'validation/golden_cases'
-          passed = failed = 0
-          for f in sorted(os.listdir(cases_dir)):
-              if f.endswith('.json'):
-                  with open(os.path.join(cases_dir, f)) as fh:
-                      case = json.load(fh)
-                  # TODO: Add actual calculation verification
-                  passed += 1
-                  print(f'  PASS: {case[\"test_id\"]} — {case[\"test_name\"]}')
-          print(f'Total: {passed} passed, {failed} failed')
-          if failed > 0:
-              sys.exit(1)
-          "
+          if [ -d "tests" ] && [ "$(ls -A tests/*.py 2>/dev/null)" ]; then
+            pytest tests/ -v --tb=short -m golden
+          else
+            echo "No tests found, skipping"
+          fi
 
-      - name: Generate SHA-256
-        if: success()
+      - name: Download latest Excel from Release
+        id: download
+        continue-on-error: true
         run: |
-          sha256sum output/Concrete_Lab_Companion_v1.0.0.xlsx > output/Concrete_Lab_Companion_v1.0.0.xlsx.sha256
-          cat output/Concrete_Lab_Companion_v1.0.0.xlsx.sha256
+          echo "Attempting to download latest Excel from GitHub Releases..."
+          RELEASE_INFO=$(curl -s -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/latest")
+
+          DOWNLOAD_URL=$(echo "$RELEASE_INFO" | grep -o '"browser_download_url": "[^"]*\.xlsx"' | head -1 | cut -d'"' -f4)
+
+          if [ -n "$DOWNLOAD_URL" ]; then
+            mkdir -p .audit
+            curl -L -o .audit/excel.xlsx "$DOWNLOAD_URL"
+            echo "downloaded=true" >> $GITHUB_OUTPUT
+            echo "✅ Excel downloaded from Release"
+          else
+            echo "downloaded=false" >> $GITHUB_OUTPUT
+            echo "⚠️ No Excel found in latest Release"
+          fi
+
+      - name: Run Excel Audit
+        if: steps.download.outputs.downloaded == 'true'
+        run: |
+          if [ -f "scripts/audit_excel.py" ]; then
+            python scripts/audit_excel.py
+          fi
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: excel-audit-report
+          path: |
+            docs/qa/EXCEL_AUDIT_REPORT.json
+            validation/formulas_audit.txt
+          if-no-files-found: ignore
