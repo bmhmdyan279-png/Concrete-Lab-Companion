@@ -49,9 +49,9 @@
                 document.getElementById('version').innerText = data.tag_name;
                 const asset = data.assets.find(a => a.name.endsWith('.xlsx'));
                 if(asset) document.getElementById('downloadLink').href = asset.browser_download_url;
-                document.getElementById('sha256').innerText = 'b2668023a3dade735eebfc07dd0bbb554b6ddd43da280c209888b71b66c6804e';
+                document.getElementById('sha256').innerText = 'cf2ee4eb6d708f2817d54cf290ce5804b5d9442dbc808aa96f61a67b3eb52515';
             }).catch(() => {
-                document.getElementById('sha256').innerText = 'b2668023a3dade735eebfc07dd0bbb554b6ddd43da280c209888b71b66c6804e';
+                document.getElementById('sha256').innerText = 'cf2ee4eb6d708f2817d54cf290ce5804b5d9442dbc808aa96f61a67b3eb52515';
             });
 
         function copyHash() {
