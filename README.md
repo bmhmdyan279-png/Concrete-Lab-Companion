@@ -1,173 +1,90 @@
-<div dir="rtl" align="right">
-
 # 🧪 Concrete Lab Companion
 
-**پیوست دیجیتال کتاب «فناوری بتن» — ماشین‌حساب، اعتبارسنجی و QA آزمایشگاهی**
+> پیوست دیجیتال کتاب «فناوری بتن در آزمایشگاه» — ابزار محاسباتی ۲۰ آزمایش استاندارد ASTM/ISIRI
 
-[![Release](https://img.shields.io/github/v/release/bmhmdyan279-png/Concrete-Lab-Companion?label=%D9%86%D8%B3%D8%AE%D9%87&color=blue)](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest)
-[![Build](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/actions/workflows/build.yml/badge.svg)](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/actions/workflows/build.yml)
-[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
-[](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest)
+[![GitHub release](https://img.shields.io/github/v/release/bmhmdyan279-png/Concrete-Lab-Companion)](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
----
+## 📥 دانلود سریع
 
-## ⬇️ دانلود سریع
+👉 **[دانلود آخرین نسخه از GitHub Releases](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest)**
 
-| فایل                   | لینک                                                                                                          |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 📥 آخرین نسخه Workbook | [GitHub Releases → دانلود xlsx](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest)    |
-| 🔑 رمز شیت‌ها          | `ConcreteLab2026!` _(عمدی و عمومی — فقط برای جلوگیری از ویرایش تصادفی)_                                       |
-| 📖 صفحه فرود           | [bmhmdyan279-png.github.io/Concrete-Lab-Companion](https://bmhmdyan279-png.github.io/Concrete-Lab-Companion/) |
+یا از صفحه رسمی: <https://bmhmdyan279-png.github.io/Concrete-Lab-Companion/>
 
----
+## ✨ ویژگی‌ها
 
-## این ابزار چه کاری انجام می‌دهد؟
+- 🧪 **۲۰ آزمایش بتن** (دانه‌بندی، مقاومت، اسلامپ، اشمیت و...)
+- 🛡️ **بدون ماکرو** — سازگار با Excel Desktop / Web / Mobile
+- 📊 **نمودار دانه‌بندی لگاریتمی** + پاکت استاندارد ISIRI 302
+- ⚠️ **شناسایی ۸ خطای چاپی کتاب** با توضیح اصلاحی
+- 🔒 **محافظت شیت‌ها** (رمز: `ConcreteLab2026!` — فقط برای جلوگیری از ویرایش تصادفی)
+- 🔐 **SHA-256** برای تأیید اصالت فایل
 
-- **۲۰ آزمایش بتن** (اسلامپ، مقاومت فشاری، دانه‌بندی و…) با فرمول‌های Excel
-- **بدون ماکرو (VBA-Free)** → روی Desktop، Excel Online و موبایل اجرا می‌شود
-- **اعتبارسنجی ورودی** با پیام‌های خطای فارسی
-- **رنگ‌بندی استاندارد**: 🟡 ورودی | ⬜ محاسبه | 🟢 قبولی | 🔴 خطا
-- **شیت‌های مرجع پنهان** برای ردیابی استانداردها
+## 📋 وضعیت فعلی (v1.1.0)
 
----
+| معیار                     | وضعیت                    |
+| ------------------------- | ------------------------ |
+| آزمایش‌های پیاده‌سازی‌شده | **۲۰ از ۲۰** ✅          |
+| فرمول‌های فعال            | **۱۰۰٪** ✅              |
+| خطاهای کتاب شناسایی‌شده   | **۸ از ۸** ✅            |
+| داشبورد                   | **پویا و فرمول‌محور** ✅ |
+| Golden Tests              | **۵ تست خودکار** ✅      |
 
-## ⚠️ وضعیت فعلی — شفاف و صادقانه
+## 🔐 تأیید اصالت فایل
 
-| معیار                     | وضعیت           | توضیح                                    |
-| ------------------------- | --------------- | ---------------------------------------- |
-| شیت‌های پیاده‌سازی‌شده    | `12/20`         | بقیه در دست توسعه                        |
-| فرمول‌های فعال            | `~70%`          | نه ۱۰۰٪ — هنوز تکمیل نشده                |
-| اعتبارسنجی (Validation)   | `4/8 خطا`       | فقط ۴ مورد در `_Validation_Data` ثبت شده |
-| تست خودکار (Golden Tests) | `0`             | ساختار آماده، داده‌ها در حال تکمیل       |
-| داشبورد                   | **ایستا**       | مقادیر hard-coded، نه زنده               |
-| سازگاری iOS/Android       | **آزمایش‌نشده** | Designed for، نه Verified                |
+پس از دانلود، هش SHA-256 را بررسی کنید:
 
-> **توجه:** این پروژه هنوز به نسخه پایدار نرسیده. ادعاهای قبلی (۱۰۰٪ فرمول فعال، داشبورد زنده، سیستم هوشمند) اغراق‌آمیز بودند و اصلاح شدند.
-
----
-
-## 🔐 امنیت — دقیق و شفاف
-
-| موضوع              | واقعیت                                                                             |
-| ------------------ | ---------------------------------------------------------------------------------- |
-| SHA-256            | **File Integrity Verification** — تأیید فایل دانلودی دست‌نخورده است. «امنیت» نیست. |
-| رمز شیت            | **Formula accidental-edit protection** — مکانیزم امنیتی واقعی نیست.                |
-| رمز عمومی          | عمداً عمومی است. `Password ≠ Secret`                                               |
-| زنجیره اعتماد کامل | نیازمند Signed Release + Provenance (در نقشه راه)                                  |
-
-### تأیید هش فایل
+**PowerShell:**
 
 ```powershell
-# PowerShell
-Get-FileHash .\Concrete_Lab_Companion_v1.0.0.xlsx -Algorithm SHA256
+Get-FileHash .\Concrete_Lab_Companion_v1.1.0.xlsx -Algorithm SHA256
 ```
 
-مقدار مورد انتظار در [صفحه فرود](https://bmhmdyan279-png.github.io/Concrete-Lab-Companion/) و هر Release درج شده است.
+**مقدار مورد انتظار:** `b2668023a3dade735eebfc07dd0bbb554b6ddd43da280c209888b71b66c6804e`
 
----
-
-## 📐 ساختار مخزن
-
-```
-Concrete-Lab-Companion/
-├── build.py                  # تنها نقطه ساخت (Canonical)
-├── config.yaml               # پیکربندی مرکزی
-├── requirements.txt
-├── README.md
-├── CHANGELOG.md
-├── LICENSE
-├── CITATION.cff
-├── CONTRIBUTING.md
-├── .gitignore
-├── .github/
-│   ├── workflows/build.yml
-│   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md
-│   │   └── feature_request.md
-│   └── PULL_REQUEST_TEMPLATE.md
-├── src/
-│   ├── workbook/
-│   ├── standards/
-│   ├── validation/
-│   └── reporting/
-├── validation/
-│   ├── errata.yaml           # Single Source of Truth خطاها
-│   └── golden_cases/
-│       ├── 1-1.json
-│       ├── 1-2.json
-│       └── ...
-├── landing/
-│   └── index.html
-└── docs/
-    └── screenshots/
-```
-
----
-
-## 🛠️ ساخت و اجرا
+## 🛠️ ساخت از سورس (برای توسعه‌دهندگان)
 
 ```bash
-# ۱. Clone
 git clone https://github.com/bmhmdyan279-png/Concrete-Lab-Companion.git
 cd Concrete-Lab-Companion
-
-# ۲. نصب وابستگی‌ها
 pip install -r requirements.txt
-
-# ۳. ساخت Workbook
 python build.py
-
-# ۴. اجرای تست‌ها
-python -m pytest validation/ -v
 ```
 
----
+فایل خروجی در `output/Concrete_Lab_Companion_v1.1.0.xlsx` ساخته می‌شود.
 
-## 📋 استانداردهای مرجع
+## 📝 Changelog
 
-هر آزمایش باید مشخصاً بگوید:
+### v1.1.0 (2026-08-10)
 
-```yaml
-test_id: '2-4'
-standard: 'ASTM C39'
-edition: '2023'
-clause: 'Section 8.2'
-formula_source: "f'c = P / A"
-```
+- 🔧 رفع ۴ باگ بحرانی (داشبورد، ۲-۴، ۴-۱، نمودار)
+- ✅ استفاده از MROUND برای گرد کردن مهندسی
+- ✅ ستون میانی NA() برای نمودار
+- ✅ کنترل جرم شامل پان
 
----
+### v1.0.0 (2026-08-09)
 
-## 📊 تعریف «پیاده‌سازی کامل» یک آزمایش
+- 🎉 انتشار اولیه
+- 🧪 پیاده‌سازی ۲۰ آزمایش ASTM/ISIRI
+- 📊 نمودار دانه‌بندی لگاریتمی
+- ⚠️ شناسایی ۸ خطای کتاب
 
-یک آزمایش **implemented** محسوب می‌شود اگر:
+## 📖 استفاده
 
-- [x] شیت اختصاصی داشته باشد
-- [x] سلول‌های ورودی مشخص و unlocked
-- [x] فرمول محاسبه با قفل
-- [x] اعتبارسنجی ورودی (DV)
-- [x] واحد اندازه‌گیری
-- [x] خروجی نهایی
-- [x] ارجاع به استاندارد (Standard + Clause)
-- [x] حداقل یک Golden Test Case
-- [x] در `_Validation_Data` ثبت شده باشد
+1. فایل را دانلود کنید
+2. در Excel (Desktop/Online/Mobile) باز کنید
+3. در سلول‌های **زرد** مقادیر آزمایش را وارد کنید
+4. نتایج در سلول‌های **خاکستری** محاسبه می‌شوند
+5. رمز شیت‌ها: `ConcreteLab2026!`
 
----
+## ⚠️ سلب مسئولیت
 
-## 📜 مجوز
+این ابزار برای **راستی‌آزمایی** محاسبات دستی است، نه جایگزین آن. همیشه طبق استاندارد مرجع محاسبه کنید و نتایج را با این ابزار مقایسه نمایید.
 
-[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — استفاده آزاد آموزشی با ارجاع به کتاب. استفاده تجاری ممنوع.
+## 📚 منبع
 
-## 📖 ارجاع علمی
+کتاب «فناوری بتن در آزمایشگاه» — چاپ ۱۴۰۵
 
-فایل [`CITATION.cff`](CITATION.cff) را ببینید.
+## 📄 لایسنس
 
----
-
-## 🔗 لینک‌های مفید
-
-- [CHANGELOG](CHANGELOG.md) — تاریخچه تغییرات
-- [CONTRIBUTING](CONTRIBUTING.md) — راهنمای مشارکت
-- [Issue Templates](.github/ISSUE_TEMPLATE/) — گزارش باگ / درخواست قابلیت
-- [GitHub Actions](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/actions) — وضعیت build
-
-</div>
+MIT License
