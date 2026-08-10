@@ -37,3 +37,6 @@ temp/
 # Excel audit cache (binary file not committed)
 .audit/
 *.audit.xlsx
+*.xlsx
+releases/
+output/
