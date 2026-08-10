@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args:
+          - --fix=lf
+        exclude: '\.(bat|cmd|ps1)$'
+      - id: check-yaml
+        args:
+          - --allow-multiple-documents
+      - id: check-json
+      - id: check-added-large-files
+        args:
+          - --maxkb=10240
+        exclude: '\.(xlsx|xlsm|xls|png|jpe?g|gif|pdf|zip|7z|mp4|mp3|woff2?|ttf|otf|bin|dll|exe|so|dylib)$'
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: check-builtin-literals
+      - id: debug-statements
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.40.0
+    hooks:
+      - id: markdownlint
+        args:
+          - --fix
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        types_or:
+          - markdown
+          - yaml
+          - json
+        exclude: 'package-lock\.json'
