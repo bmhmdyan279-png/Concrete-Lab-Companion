@@ -7,7 +7,7 @@
 [![Release](https://img.shields.io/github/v/release/bmhmdyan279-png/Concrete-Lab-Companion?label=%D9%86%D8%B3%D8%AE%D9%87&color=blue)](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest)
 [![Build](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/actions/workflows/build.yml/badge.svg)](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/actions/workflows/build.yml)
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
-[![Excel](https://img.shields.io/badge/Excel-VBA--Free-green)]()
+[](https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest)
 
 ---
 

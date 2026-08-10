@@ -26,10 +26,10 @@ $changes = & git diff --cached --quiet
 if ($LASTEXITCODE -ne 0) {
     Write-Host "`n💾 کامیت نتایج ممیزی..." -ForegroundColor Yellow
     & git commit -m "chore(qa): phase 2 - excel perfection audit report" --no-verify
-    
+
     Write-Host "`n🚀 Push به origin..." -ForegroundColor Yellow
     & git push origin HEAD
-    
+
     Write-Host "`n✅ فاز دوم کامل شد و push شد!" -ForegroundColor Green
 } else {
     Write-Host "`nℹ️  تغییری برای کامیت یافت نشد." -ForegroundColor Yellow
