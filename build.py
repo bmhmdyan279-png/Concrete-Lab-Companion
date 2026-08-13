@@ -15,18 +15,18 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional
 
 from openpyxl import Workbook
 from openpyxl.chart import ScatterChart, Reference, Series
 from openpyxl.comments import Comment
-from openpyxl.formatting.rule import CellIsRule, FormulaRule
+from openpyxl.formatting.rule import FormulaRule
 from openpyxl.styles import (
-    Alignment, Border, Font, NamedStyle, PatternFill, Protection, Side
+    Alignment, Border, Font, PatternFill, Protection, Side
 )
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
-from openpyxl.worksheet.page import PageMargins, PrintPageSetup
+from openpyxl.worksheet.page import PageMargins
 
 # ─── Logging ────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -69,7 +69,6 @@ class StyleManager:
         "pass_fill": "C6EFCE", "pass_font": "006100", "warn_fill": "FCE4D6",
         "warn_font": "C00000", "fail_fill": "FFC7CE", "fail_font": "9C0006",
         "header_fill": "1F4E79", "header_font": "FFFFFF", "nav_fill": "D6E4F0",
-        "title_fill": "1F4E79", "title_font": "FFFFFF",
     }
     FONT_BODY = "Tahoma"
     FONT_NUM = "Calibri"
@@ -205,19 +204,14 @@ class TestSpec:
 
 
 # ─── Test Registry ─────────────────────────────────────────────────────────
-# All test definitions are centralised here.
-# Input rows start at 5; outputs and checks placed dynamically.
 TEST_REGISTRY: Dict[str, TestSpec] = {}
 
-# ─── Helper to build registry ─────────────────────────────────────────────
-def register_test(spec: TestSpec):
+def register_test(spec: TestSpec) -> TestSpec:
     TEST_REGISTRY[spec.id] = spec
     return spec
 
 # ─── Define all tests ──────────────────────────────────────────────────────
 def define_tests():
-    # 01_اطلاعات_آزمون is built separately (not a TestSpec)
-
     # 1-1 Sieve Analysis
     register_test(TestSpec(
         id="1-1",
@@ -229,7 +223,7 @@ def define_tests():
             InputField("initial_mass", "جرم اولیه نمونه خشک (g):", 5, validation={"type":"decimal","min":0,"max":100000}),
         ],
         outputs=[
-            OutputField("fm", "مدول نرمی (FM):", 19, 3, 
+            OutputField("fm", "مدول نرمی (FM):", 19, 3,
                         '=IF(OR($C$5=0,C8=""),"—",ROUND(SUMPRODUCT((G8:G16=TRUE)*E8:E16)/100,2))',
                         num_fmt="0.00", style="pass"),
         ],
@@ -290,7 +284,7 @@ def define_tests():
                         num_fmt="0.00"),
         ],
         checks=[
-            Check("بررسی فیزیکی (SSD ≥ OD)", 
+            Check("بررسی فیزیکی (SSD ≥ OD)",
                   '=IF(OR(C9="—",C10="—"),"—",IF(C10<C9-0.01,"❌ غیرفیزیکی","✅"))', 14),
             Check("بررسی فیزیکی (App ≥ SSD)",
                   '=IF(OR(C10="—",C11="—"),"—",IF(C11<C10-0.01,"❌ غیرفیزیکی","✅"))', 15),
@@ -399,7 +393,7 @@ def define_tests():
         checks=[]
     ))
 
-    # 1-8 Absorption (replaces Los Angeles — now correctly named)
+    # 1-8 Absorption
     register_test(TestSpec(
         id="1-8",
         title="جذب آب سنگدانه",
@@ -438,7 +432,7 @@ def define_tests():
         checks=[]
     ))
 
-    # 2-2 Normal Consistency (ASTM C187) — corrected standard
+    # 2-2 Normal Consistency (ASTM C187)
     register_test(TestSpec(
         id="2-2",
         title="قوام نرمال سیمان (ویکات)",
@@ -455,7 +449,7 @@ def define_tests():
                         '=IF(OR(C5="",C6="",C5=0),"—",ROUND(C6/C5*100,1))', num_fmt="0.0"),
         ],
         checks=[
-            Check("وضعیت نفوذ", 
+            Check("وضعیت نفوذ",
                   '=IF(C7="","",IF(ABS(C7-10)>1,"⚠️ تکرار با آب جدید","✅"))', 10),
         ]
     ))
@@ -600,7 +594,7 @@ def define_tests():
                         num_fmt="0.1", style="pass"),
         ],
         checks=[
-            Check("الگوی شکست معتبر", 
+            Check("الگوی شکست معتبر",
                   '=IF(C8="","",IF(OR(C8="نوع ۱",C8="نوع ۲",C8="نوع ۳"),"✅ معتبر","⚠️ نامعتبر"))', 12),
         ]
     ))
@@ -745,7 +739,8 @@ class WorkbookBuilder:
         return self.wb
 
     # ─── Helper methods ──────────────────────────────────────────────────
-    def _cell(self, ws, row, col, value=None, style=None, num_fmt=None, locked=True, hyperlink=None):
+    @staticmethod
+    def _cell(ws, row, col, value=None, style=None, num_fmt=None, locked=True, hyperlink=None):
         cell = ws.cell(row=row, column=col, value=value)
         if style:
             STYLES.apply(cell, style)
@@ -756,7 +751,8 @@ class WorkbookBuilder:
             cell.hyperlink = hyperlink
         return cell
 
-    def _merge(self, ws, r1, c1, r2, c2):
+    @staticmethod
+    def _merge(ws, r1, c1, r2, c2):
         ws.merge_cells(start_row=r1, start_column=c1, end_row=r2, end_column=c2)
 
     def _add_nav(self, ws):
@@ -780,7 +776,8 @@ class WorkbookBuilder:
             STYLES.apply(cell2, "subtitle")
             cell2.alignment = STYLES.get("right")["alignment"]  # type: ignore
 
-    def _add_dv(self, ws, cells, dv_type, **kwargs):
+    @staticmethod
+    def _add_dv(ws, cells, dv_type, **kwargs):
         if dv_type == "decimal":
             dv = DataValidation(type="decimal", operator="between",
                                 formula1=str(kwargs.get("min", 0)),
@@ -810,10 +807,12 @@ class WorkbookBuilder:
             if inp.tooltip:
                 ws.cell(row=inp.row, column=inp.col).comment = Comment(inp.tooltip, "سیستم")
 
-    def _freeze_panes(self, ws, row=4, col=1):
+    @staticmethod
+    def _freeze_panes(ws, row=4, col=1):
         ws.freeze_panes = f"{get_column_letter(col)}{row}"
 
-    def _setup_print(self, ws, orientation="portrait", fit_to_width=1, fit_to_height=1,
+    @staticmethod
+    def _setup_print(ws, orientation="portrait", fit_to_width=1, fit_to_height=1,
                      margins=(0.3, 0.3, 0.5, 0.5)):
         ws.page_setup.orientation = orientation
         ws.page_setup.paperSize = ws.PAPERSIZE_A4
@@ -915,7 +914,7 @@ class WorkbookBuilder:
         for inp in spec.inputs:
             self._cell(ws, inp.row, 1, inp.label, style="normal", align="right")
             self._merge(ws, inp.row, 1, inp.row, 2)
-            cell = self._cell(ws, inp.row, inp.col, None, style="input", locked=False, align="right")
+            self._cell(ws, inp.row, inp.col, None, style="input", locked=False, align="right")
             if inp.unit:
                 self._cell(ws, inp.row, inp.col + 1, f"[{inp.unit}]", style="num")
         self._apply_input_validation(ws, spec.inputs)
