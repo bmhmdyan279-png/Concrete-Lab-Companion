@@ -38,6 +38,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: output/Concrete_Lab_Companion_v2.0.0.xlsx
-          asset_name: Concrete_Lab_Companion_v2.0.0.xlsx
+          asset_path: output/Concrete_Lab_Companion_v2.1.0.xlsx
+          asset_name: Concrete_Lab_Companion_v2.1.0.xlsx
           asset_content_type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
