@@ -769,12 +769,12 @@ class WorkbookBuilder:
         self._merge(ws, 2, 1, 2, 11)
         cell = ws.cell(row=2, column=1, value=title)
         STYLES.apply(cell, "title")
-        cell.alignment = STYLES.get("right")["alignment"]  # type: ignore
+        STYLES.apply(cell, "right")   # <-- اصلاح شده
         if subtitle:
             self._merge(ws, 3, 1, 3, 11)
             cell2 = ws.cell(row=3, column=1, value=subtitle)
             STYLES.apply(cell2, "subtitle")
-            cell2.alignment = STYLES.get("right")["alignment"]  # type: ignore
+            STYLES.apply(cell2, "right")   # <-- اصلاح شده
 
     @staticmethod
     def _add_dv(ws, cells, dv_type, **kwargs):
