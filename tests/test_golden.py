@@ -2,7 +2,7 @@ import openpyxl
 import pytest
 import os
 
-EXCEL_FILE = "Concrete_Lab_Companion_v1.1.0.xlsx" # نام فایل نهایی
+EXCEL_FILE = "Concrete_Lab_Companion_v2.1.0.xlsx" # نام فایل نهایی
 
 def test_mortar_strength_2_4():
     if not os.path.exists(EXCEL_FILE): pytest.skip("Excel file not found")
