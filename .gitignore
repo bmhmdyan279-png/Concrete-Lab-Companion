@@ -1,42 +1,26 @@
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+.env
 *.egg-info/
 dist/
 build/
-.eggs/
+
+# Output files
+output/
+*.xlsx
+*.sha256
 
 # IDE
-.idea/
 .vscode/
+.idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Excel output
-*.xlsx
-*.xlsm
-*.xls
-
-# Environment
-.env
-.venv/
-venv/
-
-# Logs
-*.log
-
-# Temporary
-tmp/
-temp/
-# Excel audit cache (binary file not committed)
-.audit/
-*.audit.xlsx
-*.xlsx
-releases/
-output/

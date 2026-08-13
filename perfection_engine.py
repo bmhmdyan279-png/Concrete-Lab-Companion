@@ -99,7 +99,12 @@ def audit_excel(excel_path, audit_out):
 
 if __name__ == "__main__":
   excel_files = glob.glob("**/*.xlsx", recursive=True)
-  target_excel = next((f for f in excel_files if 'audit' not in f and 'template' not in f), None)
+  # پیدا کردن آخرین نسخه بر اساس نام فایل (مثلاً v1.1.0 > v1.0.0)
+  xlsx_files = sorted(
+    [f for f in excel_files if 'audit' not in f and 'template' not in f],
+    reverse=True
+  )
+  target_excel = xlsx_files[0] if xlsx_files else None
 
   if not target_excel:
     print("❌ No .xlsx file found!")

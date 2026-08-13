@@ -83,6 +83,7 @@ class StyleManager:
             "header": {
                 "fill": PatternFill("solid", fgColor=c["header_fill"]),
                 "font": Font(name=self.FONT_BODY, color=c["header_font"], bold=True, size=11),
+                "alignment": Alignment(horizontal="center", vertical="center", wrap_text=True),
             },
             "input": {
                 "fill": PatternFill("solid", fgColor=c["input_fill"]),
@@ -90,50 +91,58 @@ class StyleManager:
                     left=Side("thin", c["input_border"]), right=Side("thin", c["input_border"]),
                     top=Side("thin", c["input_border"]), bottom=Side("thin", c["input_border"])
                 ),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "calc": {
                 "fill": PatternFill("solid", fgColor=c["calc_fill"]),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "pass": {
                 "fill": PatternFill("solid", fgColor=c["pass_fill"]),
                 "font": Font(name=self.FONT_BODY, color=c["pass_font"], bold=True),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "warn": {
                 "fill": PatternFill("solid", fgColor=c["warn_fill"]),
                 "font": Font(name=self.FONT_BODY, color=c["warn_font"], bold=True),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "fail": {
                 "fill": PatternFill("solid", fgColor=c["fail_fill"]),
                 "font": Font(name=self.FONT_BODY, color=c["fail_font"], bold=True),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "title": {
                 "font": Font(name=self.FONT_BODY, bold=True, size=14, color=c["header_fill"]),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "subtitle": {
                 "font": Font(name=self.FONT_BODY, size=9, italic=True, color="666666"),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "nav": {
                 "fill": PatternFill("solid", fgColor=c["nav_fill"]),
                 "font": Font(name=self.FONT_BODY, size=10, color=c["header_fill"]),
+                "alignment": Alignment(horizontal="center", vertical="center", wrap_text=True),
             },
             "normal": {
                 "font": Font(name=self.FONT_BODY, size=11),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "num": {
                 "font": Font(name=self.FONT_NUM, size=11),
+                "alignment": Alignment(horizontal="right", vertical="center", wrap_text=True),
             },
             "thin_border": Border(
                 left=Side("thin", "BFBFBF"), right=Side("thin", "BFBFBF"),
                 top=Side("thin", "BFBFBF"), bottom=Side("thin", "BFBFBF")
             ),
-            "center": Alignment(horizontal="center", vertical="center", wrap_text=True),
-            "right": Alignment(horizontal="right", vertical="center", wrap_text=True),
         })
 
     def get(self, key: str) -> Dict:
         return self.styles.get(key, {})
 
-    def apply(self, cell, style_key: str, extra: Dict = None):
+    def apply(self, cell, style_key: str):
         style = self.get(style_key)
         if not style:
             return
@@ -145,9 +154,6 @@ class StyleManager:
             cell.border = style["border"]
         if "alignment" in style:
             cell.alignment = style["alignment"]
-        if extra:
-            for k, v in extra.items():
-                setattr(cell, k, v)
 
 
 STYLES = StyleManager()
@@ -739,8 +745,8 @@ class WorkbookBuilder:
         return self.wb
 
     # ─── Helper methods ──────────────────────────────────────────────────
-    @staticmethod
-    def _cell(ws, row, col, value=None, style=None, num_fmt=None, locked=True, hyperlink=None):
+    def _cell(self, ws, row, col, value=None, style=None, num_fmt=None,
+              locked=True, hyperlink=None, align=None):
         cell = ws.cell(row=row, column=col, value=value)
         if style:
             STYLES.apply(cell, style)
@@ -749,6 +755,13 @@ class WorkbookBuilder:
         cell.protection = Protection(locked=locked)
         if hyperlink:
             cell.hyperlink = hyperlink
+        if align:
+            if align == "right":
+                cell.alignment = Alignment(horizontal="right", vertical="center", wrap_text=True)
+            elif align == "center":
+                cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+            elif align == "left":
+                cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
         return cell
 
     @staticmethod
@@ -759,22 +772,18 @@ class WorkbookBuilder:
         for col in range(1, 12):
             cell = ws.cell(row=1, column=col)
             STYLES.apply(cell, "nav")
-        self._cell(ws, 1, 1, "🏠", hyperlink="#00_راهنما!A1")
-        self._cell(ws, 1, 3, "📋", hyperlink="#01_اطلاعات_آزمون!A1")
-        self._cell(ws, 1, 5, "📑", hyperlink="#22_گزارش!A1")
-        self._cell(ws, 1, 7, "📊", hyperlink="#23_داشبورد!A1")
-        self._cell(ws, 1, 9, "🔒")
+        self._cell(ws, 1, 1, "🏠", hyperlink="#00_راهنما!A1", align="center")
+        self._cell(ws, 1, 3, "📋", hyperlink="#01_اطلاعات_آزمون!A1", align="center")
+        self._cell(ws, 1, 5, "📑", hyperlink="#22_گزارش!A1", align="center")
+        self._cell(ws, 1, 7, "📊", hyperlink="#23_داشبورد!A1", align="center")
+        self._cell(ws, 1, 9, "🔒", align="center")
 
     def _add_title(self, ws, title, subtitle=""):
         self._merge(ws, 2, 1, 2, 11)
-        cell = ws.cell(row=2, column=1, value=title)
-        STYLES.apply(cell, "title")
-        STYLES.apply(cell, "right")   # <-- اصلاح شده
+        self._cell(ws, 2, 1, title, style="title", align="right")
         if subtitle:
             self._merge(ws, 3, 1, 3, 11)
-            cell2 = ws.cell(row=3, column=1, value=subtitle)
-            STYLES.apply(cell2, "subtitle")
-            STYLES.apply(cell2, "right")   # <-- اصلاح شده
+            self._cell(ws, 3, 1, subtitle, style="subtitle", align="right")
 
     @staticmethod
     def _add_dv(ws, cells, dv_type, **kwargs):
@@ -802,8 +811,12 @@ class WorkbookBuilder:
     def _apply_input_validation(self, ws, inputs):
         for inp in inputs:
             if inp.validation:
-                self._add_dv(ws, [f"{get_column_letter(inp.col)}{inp.row}"],
-                             **inp.validation)
+                # Extract dv_type from validation dict
+                val_copy = inp.validation.copy()
+                dv_type = val_copy.pop("type", None)
+                if dv_type:
+                    self._add_dv(ws, [f"{get_column_letter(inp.col)}{inp.row}"],
+                                 dv_type, **val_copy)
             if inp.tooltip:
                 ws.cell(row=inp.row, column=inp.col).comment = Comment(inp.tooltip, "سیستم")
 
@@ -869,9 +882,9 @@ class WorkbookBuilder:
             ("23", "داشبورد", ""),
             ("24", "QA Test", ""),
         ]:
-            self._cell(ws, r, 1, code, style="num")
+            self._cell(ws, r, 1, code, style="num", align="right")
             self._cell(ws, r, 2, name, style="normal", align="right")
-            self._cell(ws, r, 6, std, style="num")
+            self._cell(ws, r, 6, std, style="num", align="right")
             self._merge(ws, r, 2, r, 5)
             self._merge(ws, r, 6, r, 11)
             r += 1
@@ -916,7 +929,7 @@ class WorkbookBuilder:
             self._merge(ws, inp.row, 1, inp.row, 2)
             self._cell(ws, inp.row, inp.col, None, style="input", locked=False, align="right")
             if inp.unit:
-                self._cell(ws, inp.row, inp.col + 1, f"[{inp.unit}]", style="num")
+                self._cell(ws, inp.row, inp.col + 1, f"[{inp.unit}]", style="num", align="right")
         self._apply_input_validation(ws, spec.inputs)
 
         # Outputs
@@ -924,13 +937,13 @@ class WorkbookBuilder:
             self._cell(ws, out.row, 1, out.label, style="normal", align="right")
             self._merge(ws, out.row, 1, out.row, 2)
             self._cell(ws, out.row, out.col, out.formula, style=out.style,
-                       num_fmt=out.num_fmt, locked=True)
+                       num_fmt=out.num_fmt, locked=True, align="right")
 
         # Checks
         for chk in spec.checks:
             self._cell(ws, chk.row, 1, chk.label, style="normal", align="right")
             self._merge(ws, chk.row, 1, chk.row, 2)
-            self._cell(ws, chk.row, chk.col, chk.formula, style="calc", locked=True)
+            self._cell(ws, chk.row, chk.col, chk.formula, style="calc", locked=True, align="right")
 
         # Chart if defined
         if spec.chart:
@@ -1057,10 +1070,10 @@ class WorkbookBuilder:
         r += 1
         for name, (sheet, cell, unit) in result_map.items():
             self._cell(ws, r, 1, name, style="normal", align="right")
-            self._cell(ws, r, 2, f"='{sheet}'!{cell}", style="calc", num_fmt="0.0")
-            self._cell(ws, r, 3, unit, style="num")
+            self._cell(ws, r, 2, f"='{sheet}'!{cell}", style="calc", num_fmt="0.0", align="right")
+            self._cell(ws, r, 3, unit, style="num", align="right")
             status_formula = f'=IF(ISNUMBER(B{r}),"✅",IF(B{r}="—","انجام نشده",B{r}))'
-            self._cell(ws, r, 4, status_formula, style="calc")
+            self._cell(ws, r, 4, status_formula, style="calc", align="right")
             # CF for status
             ws.conditional_formatting.add(
                 f"D{r}",
@@ -1083,11 +1096,11 @@ class WorkbookBuilder:
         r = 5
 
         self._cell(ws, r, 1, "تعداد کل آزمایش‌ها:", style="normal", align="right")
-        self._cell(ws, r, 3, len(TEST_REGISTRY), style="calc", num_fmt="0")
+        self._cell(ws, r, 3, len(TEST_REGISTRY), style="calc", num_fmt="0", align="right")
         r += 1
 
         self._cell(ws, r, 1, "شیت‌های پیاده‌سازی‌شده:", style="normal", align="right")
-        self._cell(ws, r, 3, len(TEST_REGISTRY), style="calc", num_fmt="0")
+        self._cell(ws, r, 3, len(TEST_REGISTRY), style="calc", num_fmt="0", align="right")
         r += 1
 
         # Progress calculation
@@ -1100,14 +1113,14 @@ class WorkbookBuilder:
             total_cells = len(input_ranges)
             progress_formula = f'=IFERROR(COUNTA({range_str})/{total_cells},0)'
             self._cell(ws, r, 1, "درصد پیشرفت (ورودی‌های پرشده):", style="normal", align="right")
-            self._cell(ws, r, 3, progress_formula, style="calc", num_fmt="0%")
+            self._cell(ws, r, 3, progress_formula, style="calc", num_fmt="0%", align="right")
         r += 2
 
         self._cell(ws, r, 1, "نسخه:", style="normal", align="right")
-        self._cell(ws, r, 3, VERSION, style="calc")
+        self._cell(ws, r, 3, VERSION, style="calc", align="right")
         r += 1
         self._cell(ws, r, 1, "تاریخ ساخت:", style="normal", align="right")
-        self._cell(ws, r, 3, BUILD_DATE, style="calc")
+        self._cell(ws, r, 3, BUILD_DATE, style="calc", align="right")
 
         self._setup_print(ws)
         self._freeze_panes(ws, row=4)
@@ -1137,15 +1150,15 @@ class WorkbookBuilder:
         ]
 
         for test_id, desc, inp, expected, formula in tests:
-            self._cell(ws, r, 1, test_id, style="num")
+            self._cell(ws, r, 1, test_id, style="num", align="right")
             self._cell(ws, r, 2, desc, style="normal", align="right")
             self._cell(ws, r, 3, inp, style="normal", align="right")
             self._cell(ws, r, 4, expected, style="normal", align="right")
-            self._cell(ws, r, 5, formula, style="calc")
+            self._cell(ws, r, 5, formula, style="calc", align="right")
             status_cell = ws.cell(row=r, column=6)
             status_cell.value = f'=IF(ISNUMBER(FIND("PASS",E{r})),"✅",IF(ISNUMBER(FIND("FAIL",E{r})),"❌","—"))'
             status_cell.font = Font(name=STYLES.FONT_BODY, size=11)
-            status_cell.alignment = STYLES.get("center")["alignment"]  # type: ignore
+            status_cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
             r += 1
 
         self._setup_print(ws)

@@ -3,61 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concrete Lab Companion | نسخه بتا</title>
+    <title>همراه دیجیتال آزمایشگاه بتن</title>
     <style>
-        body { font-family: 'Vazirmatn', 'Arial', sans-serif; background: #f4f7f6; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 800px; margin: auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .beta-banner { background: #ff9800; color: #fff; padding: 10px; text-align: center; border-radius: 6px; margin-bottom: 20px; font-weight: bold; }
-        .download-btn { display: block; width: 100%; padding: 15px; background: #28a745; color: #fff; text-align: center; text-decoration: none; border-radius: 8px; font-size: 1.2em; margin: 20px 0; box-shadow: 0 4px 6px rgba(40,167,69,0.3); }
-        .hash-box { background: #2d2d2d; color: #00ff00; padding: 15px; border-radius: 6px; font-family: monospace; word-break: break-all; position: relative; direction: ltr; text-align: left; }
-        .copy-btn { position: absolute; top: 10px; right: 10px; background: #555; color: #fff; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 12px; }
-        .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .status-card { background: #e9ecef; padding: 15px; border-radius: 8px; text-align: center; }
-        .errata { background: #fff3cd; border-right: 5px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
-        h1 { color: #2c3e50; }
+        body {
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #1F4E79;
+            font-size: 2.2em;
+            margin-bottom: 0.2em;
+        }
+        .subtitle {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
+        }
+        .badge-container {
+            margin: 20px 0;
+        }
+        .badge-container img {
+            margin: 0 5px;
+        }
+        .download-btn {
+            display: inline-block;
+            background: #1F4E79;
+            color: white;
+            padding: 14px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 20px 0;
+            transition: background 0.3s;
+        }
+        .download-btn:hover {
+            background: #0d3354;
+        }
+        .features {
+            text-align: right;
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+        }
+        .features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1.05em;
+        }
+        .features li::before {
+            content: "✅ ";
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #777;
+        }
+        .footer a {
+            color: #1F4E79;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="beta-banner">⚠️ توجه: این فایل یک نسخه بتا (Beta) است. ۱۲ از ۲۰ آزمایش پیاده‌سازی شده‌اند.</div>
-        <h1>🧪 Concrete Lab Companion</h1>
-        <p>ابزار همراه آزمایشگاه بتن | نسخه <span id="version">v1.0.0</span></p>
-
-        <a id="downloadLink" href="#" class="download-btn" target="_blank">📥 دانلود مستقیم فایل اکسل (xlsx)</a>
-
-        <div class="status-grid">
-            <div class="status-card"><h3>12/20</h3><p>آزمایش‌های فعال</p></div>
-            <div class="status-card"><h3>~70%</h3><p>فرمول‌های تکمیل‌شده</p></div>
-        </div>
-
-        <h3>🔐 اصالت‌سنجی فایل (SHA-256)</h3>
-        <div class="hash-box">
-            <button class="copy-btn" onclick="copyHash()">Copy</button>
-            <span id="sha256">در حال محاسبه...</span>
-        </div>
-
-        <div class="errata">
-            <strong>⚠️ اِراتای کتاب:</strong> در آزمایش ۱-۴ج، اگر OD=1.51 وارد کردید، اکسل هشدار می‌دهد. مقدار صحیح فیزیکی SSD همواره بزرگتر از OD است.
-        </div>
+<div class="container">
+    <h1>🧪 همراه دیجیتال آزمایشگاه بتن</h1>
+    <p class="subtitle">Concrete Lab Companion – نسخه ۲.۰.۰</p>
+    <div class="badge-container">
+        <img src="https://img.shields.io/github/v/release/bmhmdyan279-png/Concrete-Lab-Companion" alt="نسخه">
+        <img src="https://img.shields.io/github/actions/workflow/status/bmhmdyan279-png/Concrete-Lab-Companion/build.yml" alt="وضعیت ساخت">
     </div>
-
-    <script>
-        const repo = 'bmhmdyan279-png/Concrete-Lab-Companion';
-        fetch(`https://api.github.com/repos/${repo}/releases/latest`)
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('version').innerText = data.tag_name;
-                const asset = data.assets.find(a => a.name.endsWith('.xlsx'));
-                if(asset) document.getElementById('downloadLink').href = asset.browser_download_url;
-                document.getElementById('sha256').innerText = 'cf2ee4eb6d708f2817d54cf290ce5804b5d9442dbc808aa96f61a67b3eb52515';
-            }).catch(() => {
-                document.getElementById('sha256').innerText = 'cf2ee4eb6d708f2817d54cf290ce5804b5d9442dbc808aa96f61a67b3eb52515';
-            });
-
-        function copyHash() {
-            navigator.clipboard.writeText(document.getElementById('sha256').innerText);
-            alert('هش کپی شد!');
-        }
-    </script>
+    <a class="download-btn" href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest/download/Concrete_Lab_Companion_v2.0.0.xlsx">
+        📥 دانلود فایل اکسل
+    </a>
+    <ul class="features">
+        <li>بدون نیاز به ماکرو – فقط داده‌ها را وارد کنید</li>
+        <li>۲۲ شیت تخصصی برای ۲۰ آزمایش استاندارد</li>
+        <li>محاسبات خودکار با فرمول‌های تأییدشده</li>
+        <li>نمودار دانه‌بندی، گزارش و داشبورد</li>
+        <li>سازگار با اکسل آنلاین، موبایل و دسکتاپ</li>
+        <li>حفاظت از شیت‌ها و آماده برای چاپ</li>
+    </ul>
+    <p style="font-size:1.1em; margin-top:20px;">
+        <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion" style="color:#1F4E79;">مشاهده در گیت‌هاب</a> &nbsp;|&nbsp;
+        <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/blob/main/README.md" style="color:#1F4E79;">راهنمای کامل</a>
+    </p>
+    <div class="footer">
+        توسعه‌یافته توسط <a href="mailto:bmhmdyan279@gmail.com">بهنام محمدیان</a> – ۲۰۲۶<br>
+        تحت مجوز <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>
+    </div>
+</div>
 </body>
 </html>
