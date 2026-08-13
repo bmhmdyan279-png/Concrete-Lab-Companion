@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 # ─── Constants ──────────────────────────────────────────────────────────────
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 BUILD_DATE = datetime.now().strftime("%Y-%m-%d %H:%M")
 PASSWORD = os.getenv("WORKBOOK_PASSWORD", "ConcreteLab2026!")
 
