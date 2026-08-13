@@ -31,7 +31,7 @@ jobs:
           name: Concrete-Lab-Companion
           path: output/*.xlsx
 
-      - name: Upload to Release (if release)
+            - name: Upload to Release (if release)
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
