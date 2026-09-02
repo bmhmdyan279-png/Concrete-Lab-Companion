@@ -1,8 +1,8 @@
 project:
   name: 'Concrete Lab Companion'
   product_file: 'Concrete_Lab_Companion'
-  version: '1.0.0'
-  build_date: '2026-08-10'
+  version: '4.0.0'
+  build_date: '2026-09-03'
   language: 'fa'
   direction: 'RTL'
 
