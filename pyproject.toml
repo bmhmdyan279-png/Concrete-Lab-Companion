@@ -1,7 +1,7 @@
 [project]
 name = "concrete-lab-companion"
-version = "1.0.0"
-description = "Concrete Lab Companion - Excel Perfection Edition"
+version = "4.0.0"
+description = "Concrete Lab Companion - standards-compliant calculation & QA engine"
 requires-python = ">=3.9"
 
 [tool.pytest.ini_options]

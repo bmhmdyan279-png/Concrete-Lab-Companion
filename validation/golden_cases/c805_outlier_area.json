@@ -1,0 +1,20 @@
+{
+  "test_id": "C805-G2",
+  "test_name": "Rebound area with one outlier (7-unit rule) excluded from retained mean",
+  "standard": "ASTM C805/C805M-25",
+  "inputs": {
+    "readings": [42, 44, 41, 43, 45, 40, 43, 42, 44, 25],
+    "estimate": {
+      "correlation_id": "demo-linear-correlation",
+      "slope": 0.5,
+      "intercept": -5.0
+    }
+  },
+  "expected": {
+    "mean": 40.9,
+    "outliers": [25],
+    "retained_mean": 42.6667,
+    "estimated_strength_mpa": 16.33
+  },
+  "tolerance": 0.01
+}

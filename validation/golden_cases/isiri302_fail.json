@@ -1,0 +1,31 @@
+{
+  "test_id": "ISIRI302-G3",
+  "test_name": "Grading curve with excess fines (0.15 mm passing above envelope)",
+  "standard": "ISIRI 302 (1394, 3rd edition)",
+  "inputs": {
+    "curve": {
+      "9.5": 100.0,
+      "4.75": 92.0,
+      "2.36": 75.0,
+      "1.18": 55.0,
+      "0.6": 35.0,
+      "0.3": 20.0,
+      "0.15": 12.0,
+      "0.075": 1.0
+    }
+  },
+  "expected": {
+    "overall_status": "fail",
+    "statuses": {
+      "9.5": "warn",
+      "4.75": "pass",
+      "2.36": "pass",
+      "1.18": "pass",
+      "0.6": "pass",
+      "0.3": "pass",
+      "0.15": "fail",
+      "0.075": "pass"
+    }
+  },
+  "tolerance": 0.0
+}

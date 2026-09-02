@@ -1,0 +1,20 @@
+{
+  "test_id": "C805-G1",
+  "test_name": "Rebound area with 10 consistent readings, project correlation estimate",
+  "standard": "ASTM C805/C805M-25",
+  "inputs": {
+    "readings": [42, 44, 41, 43, 45, 40, 43, 42, 44, 43],
+    "estimate": {
+      "correlation_id": "demo-linear-correlation",
+      "slope": 0.5,
+      "intercept": -5.0
+    }
+  },
+  "expected": {
+    "mean": 42.7,
+    "outliers": [],
+    "retained_mean": 42.7,
+    "estimated_strength_mpa": 16.35
+  },
+  "tolerance": 0.01
+}

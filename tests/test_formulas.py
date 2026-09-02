@@ -4,7 +4,6 @@ Phase 3 of Obsessive QA - Tests extracted from validation/golden_cases
 """
 import pytest
 import json
-import glob
 from pathlib import Path
 
 GOLDEN_DIR = Path("validation/golden_cases")

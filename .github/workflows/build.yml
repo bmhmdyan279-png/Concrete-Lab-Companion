@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -22,22 +23,38 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run build script
-        run: python build.py --output output
+      - name: Run QA validation (golden suite + pytest)
+        run: python build.py --validate
 
-      - name: Upload artifact (for testing)
+      - name: Run build (engine + display-only render + structural QA)
+        run: python build.py --output output --no-protect
+
+      - name: Upload artifacts (workbook, manifest, checksum)
         uses: actions/upload-artifact@v4
         with:
           name: Concrete-Lab-Companion
-          path: output/*.xlsx
+          path: |
+            output/*.xlsx
+            output/*.json
+            output/*.sha256
 
-      - name: Upload to Release (if release)
+      - name: Upload workbook to Release (if release)
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: output/Concrete_Lab_Companion_v2.1.0.xlsx
-          asset_name: Concrete_Lab_Companion_v2.1.0.xlsx
+          asset_path: output/Concrete_Lab_Companion_v4.0.0.xlsx
+          asset_name: Concrete_Lab_Companion_v4.0.0.xlsx
           asset_content_type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      - name: Upload manifest to Release (if release)
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: output/Concrete_Lab_Companion_v4.0.0.json
+          asset_name: Concrete_Lab_Companion_v4.0.0.json
+          asset_content_type: application/json

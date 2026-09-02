@@ -1,0 +1,18 @@
+{
+  "test_id": "C39-G4",
+  "test_name": "Compressive strength, 150x150 cylinder (L/D=1.0, table lower bound 0.87)",
+  "standard": "ASTM C39/C39M-26",
+  "inputs": {
+    "geometry": "cylinder",
+    "diameter_mm": 150,
+    "length_mm": 150,
+    "load_kn": 400
+  },
+  "expected": {
+    "ld_ratio": 1.0,
+    "correction_factor": 0.87,
+    "gross_strength_mpa": 22.6354,
+    "reported_strength_mpa": 19.7
+  },
+  "tolerance": 0.01
+}

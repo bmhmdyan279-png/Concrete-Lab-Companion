@@ -1,0 +1,18 @@
+{
+  "test_id": "C39-G3",
+  "test_name": "Compressive strength, 150x240 cylinder (L/D=1.6, interpolated factor 0.968)",
+  "standard": "ASTM C39/C39M-26",
+  "inputs": {
+    "geometry": "cylinder",
+    "diameter_mm": 150,
+    "length_mm": 240,
+    "load_kn": 600
+  },
+  "expected": {
+    "ld_ratio": 1.6,
+    "correction_factor": 0.968,
+    "gross_strength_mpa": 33.9531,
+    "reported_strength_mpa": 32.9
+  },
+  "tolerance": 0.01
+}

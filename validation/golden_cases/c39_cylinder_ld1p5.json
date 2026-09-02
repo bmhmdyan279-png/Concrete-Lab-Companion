@@ -1,0 +1,18 @@
+{
+  "test_id": "C39-G2",
+  "test_name": "Compressive strength, 150x225 cylinder (L/D=1.5, tabulated factor 0.96)",
+  "standard": "ASTM C39/C39M-26",
+  "inputs": {
+    "geometry": "cylinder",
+    "diameter_mm": 150,
+    "length_mm": 225,
+    "load_kn": 500
+  },
+  "expected": {
+    "ld_ratio": 1.5,
+    "correction_factor": 0.96,
+    "gross_strength_mpa": 28.2942,
+    "reported_strength_mpa": 27.2
+  },
+  "tolerance": 0.01
+}
