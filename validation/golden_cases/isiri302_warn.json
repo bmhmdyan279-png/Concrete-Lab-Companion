@@ -1,0 +1,31 @@
+{
+  "test_id": "ISIRI302-G2",
+  "test_name": "Grading curve inside envelope but near the 0.15 mm upper boundary",
+  "standard": "ISIRI 302 (1394, 3rd edition)",
+  "inputs": {
+    "curve": {
+      "9.5": 97.5,
+      "4.75": 88.0,
+      "2.36": 70.0,
+      "1.18": 50.0,
+      "0.6": 33.0,
+      "0.3": 18.0,
+      "0.15": 8.5,
+      "0.075": 1.0
+    }
+  },
+  "expected": {
+    "overall_status": "warn",
+    "statuses": {
+      "9.5": "pass",
+      "4.75": "pass",
+      "2.36": "pass",
+      "1.18": "pass",
+      "0.6": "pass",
+      "0.3": "pass",
+      "0.15": "warn",
+      "0.075": "pass"
+    }
+  },
+  "tolerance": 0.0
+}

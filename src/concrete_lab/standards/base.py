@@ -11,7 +11,32 @@ broken cell in the generated workbook.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum, unique
 from typing import Any, ClassVar, FrozenSet, Mapping
+
+
+@unique
+class Scope(Enum):
+    """Intended role of a calculation, used to prevent misuse of results.
+
+    Every standard module declares the scope of the numbers it
+    produces so that renderers can display an explicit badge (e.g.
+    ``ESTIMATED — NOT FOR ACCEPTANCE``) and QA can refuse to treat an
+    estimation like a normative result.
+
+    Attributes (members):
+        STANDARD: Normative method; results may be used for
+            acceptance decisions when all validity rules pass.
+        REFERENCE: Informational/reference values, not for decisions.
+        ESTIMATION: Indicative estimate only; never a basis for
+            acceptance or rejection of concrete.
+        EDUCATIONAL: Teaching aid; not for any real-world decision.
+    """
+
+    STANDARD = "standard"
+    REFERENCE = "reference"
+    ESTIMATION = "estimation"
+    EDUCATIONAL = "educational"
 
 
 @dataclass(frozen=True)

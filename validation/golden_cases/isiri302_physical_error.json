@@ -1,0 +1,22 @@
+{
+  "test_id": "ISIRI302-G4",
+  "test_name": "Physically impossible curve (passing increases at 4.75 mm)",
+  "standard": "ISIRI 302 (1394, 3rd edition)",
+  "inputs": {
+    "curve": {
+      "9.5": 96.0,
+      "4.75": 99.0,
+      "2.36": 70.0,
+      "1.18": 50.0,
+      "0.6": 33.0,
+      "0.3": 18.0,
+      "0.15": 6.0,
+      "0.075": 1.0
+    }
+  },
+  "expected": {
+    "overall_status": "error",
+    "physical_issue_count_min": 1
+  },
+  "tolerance": 0.0
+}
