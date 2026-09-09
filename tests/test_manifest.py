@@ -1,6 +1,7 @@
 """Tests for the build manifest (traceability metadata)."""
 
 from concrete_lab import __version__
+from concrete_lab.cli import ARTIFACT_PATTERN
 from concrete_lab.qa.engine import QAReport
 from concrete_lab.report.manifest import REQUIRED_MANIFEST_KEYS, build_manifest
 from concrete_lab.standards import registry as standards_registry
@@ -8,7 +9,7 @@ from concrete_lab.standards import registry as standards_registry
 
 def _manifest(**overrides) -> dict:
     defaults = dict(
-        filename="Concrete_Lab_Companion_v4.0.0.xlsx",
+        filename=ARTIFACT_PATTERN.format(version=__version__),
         sha256="ab" * 32,
         sheets=("00_راهنما", "17_آزمایش_4-1"),
         qa_reports={

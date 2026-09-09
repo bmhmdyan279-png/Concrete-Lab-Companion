@@ -1,14 +1,20 @@
 {
   "test_id": "4-1",
-  "test_name": "مقاومت فشاری بتن",
-  "standard": "ASTM C39",
+  "test_name": "مقاومت فشاری استوانه ۱۵۰×۳۰۰ میلی‌متر — مسیر کامل موتور دامنه",
+  "standard": "ASTM C39/C39M-26",
+  "notes": "دادهٔ فیزیکی همان c39_cylinder_ld2.json است، ولی این پرونده از مسیر calculate('4-1', …) عبور می‌کند تا زنجیرهٔ spec → ruleset → ResultValue هم پوشش داده شود (نه فقط خود رولسیت). در ۴.۱.۰ اصلاح شد: نسخهٔ قبلی length_mm نداشت، بنابراین موتور هرگز نمی‌توانست آن را اجرا کند و پرونده بی‌صدا به «هشدار» تنزل یافته بود.",
   "inputs": {
-    "shape": "cylinder",
-    "d_mm": 150,
-    "F_kN": 715
+    "geometry": "cylinder",
+    "diameter_mm": 150,
+    "length_mm": 300,
+    "load_kn": 715
   },
   "expected": {
-    "strength_mpa": 40.4
+    "ld_ratio": 2.0,
+    "correction_factor": 1.0,
+    "gross_strength_mpa": 40.4607,
+    "reported_strength_mpa": 40.5,
+    "overall_status": "pass"
   },
-  "tolerance": 0.1
+  "tolerance": 0.01
 }

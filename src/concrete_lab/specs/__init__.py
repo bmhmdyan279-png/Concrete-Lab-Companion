@@ -10,6 +10,11 @@ import importlib
 for _chapter in ("aggregates", "cement", "fresh_concrete", "hardened_concrete"):
     importlib.import_module(f"{__name__}.{_chapter}")
 
-from concrete_lab.specs.base import TEST_REGISTRY, TestSpec, all_tests, implemented_tests
+from concrete_lab.specs.base import (  # noqa: E402 — must follow registration
+    TEST_REGISTRY,
+    TestSpec,
+    all_tests,
+    implemented_tests,
+)
 
 __all__ = ["TEST_REGISTRY", "TestSpec", "all_tests", "implemented_tests"]

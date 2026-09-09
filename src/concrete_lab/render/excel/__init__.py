@@ -7,10 +7,10 @@ from concrete_lab.render.excel.styles import StyleManager
 
 __all__ = [
     "CellModel",
+    "ExcelRenderer",
     "RowModel",
     "SheetModel",
-    "WorkbookModel",
-    "ExcelRenderer",
     "StyleManager",
+    "WorkbookModel",
     "assemble_workbook_model",
 ]

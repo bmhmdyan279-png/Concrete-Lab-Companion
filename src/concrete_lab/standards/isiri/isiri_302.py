@@ -15,6 +15,16 @@ ruleset instead of a bare ``{sieve: (upper, lower)}`` dictionary:
   envelope), WARN (inside but near a boundary), ERROR (incomplete or
   physically impossible data) are never conflated.
 
+Two derived quantities live here as well, because they are part of the
+same science and must not be re-implemented by callers or spreadsheets:
+
+* :func:`curve_from_retained` — the laboratory measures *masses retained
+  on each sieve*; the ruleset evaluates *cumulative percent passing*.
+  The conversion (including the ASTM C136 mass-balance rule) is done once,
+  here, under test.
+* :func:`fineness_modulus` — the ASTM C136 fineness-modulus index over the
+  fine-aggregate sieve series.
+
 Percent passing values are percentages (0–100); sieve sizes are mm.
 """
 
@@ -22,7 +32,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import Dict, Mapping, Optional, Tuple
+from typing import Dict, List, Mapping, Optional, Tuple
 
 from concrete_lab.domain.statuses import ValidationStatus
 from concrete_lab.standards.base import Scope, StandardSpec
@@ -45,6 +55,32 @@ RULESET_VERSION: str = "ISIRI-302-1394-v1"
 #: Values inside an envelope band but closer than this many percentage
 #: points to a boundary are reported as WARN (near-limit caution).
 WARNING_MARGIN_POINTS: float = 2.0
+
+#: Sieve series used for the **fineness modulus of fine aggregate**
+#: (ASTM C136/C136M: 3/8 in., No. 4, No. 8, No. 16, No. 30, No. 50,
+#: No. 100).  The No. 200 sieve (0.075 mm) and the pan are deliberately
+#: excluded: including the pan would add a constant 100 % to the sum and
+#: inflate the index by exactly 1.00.
+FM_SIEVE_SERIES_MM: Tuple[float, ...] = (9.5, 4.75, 2.36, 1.18, 0.600, 0.300, 0.150)
+
+#: Reporting precision of the fineness modulus (ASTM C136: nearest 0.01).
+FM_REPORT_STEP: float = 0.01
+
+#: ASTM C136 mass-balance rule: the sum of the masses retained on all
+#: sieves plus the pan must agree with the original sample mass within
+#: this relative tolerance, otherwise the analysis is discarded.
+MASS_BALANCE_TOLERANCE: float = 0.003
+
+#: Reporting precision of cumulative percent passing / percent retained
+#: (ASTM C136: nearest 0.1 %).  Rounding here is a *standard requirement*,
+#: not cosmetics: it also keeps binary floating-point noise such as
+#: ``32.99999999999999`` out of the evaluated curve and out of the
+#: rendered worksheet.
+PERCENT_REPORT_STEP: float = 0.1
+
+
+class GradingError(ValueError):
+    """Raised for invalid grading data (incomplete curve, bad masses)."""
 
 
 @dataclass(frozen=True)
@@ -277,3 +313,148 @@ class GradingRuleSet:
 #: Shared default ruleset instance (the envelope formerly known as the
 #: ``ISIRI_LIMITS`` dictionary in ``build.py``).
 DEFAULT_RULESET: GradingRuleSet = GradingRuleSet()
+
+
+# ─── Derived grading quantities ───────────────────────────────────────────
+
+
+def _round_to_step(value: float, step: float) -> float:
+    """Round ``value`` to the nearest multiple of ``step`` (half-even)."""
+    return round(round(value / step) * step, 10)
+
+
+def fineness_modulus(
+    curve: Mapping[float, float],
+    series: Tuple[float, ...] = FM_SIEVE_SERIES_MM,
+) -> float:
+    """Compute the ASTM C136/C136M fineness modulus of a grading curve.
+
+    The fineness modulus is the sum of the **cumulative percentages
+    retained** on the specified sieve series, divided by 100.  It is an
+    index of average particle size, not an acceptance criterion: ASTM
+    C136 defines no pass/fail limit for it.
+
+    Args:
+        curve: Mapping of sieve opening (mm) to cumulative percent
+            passing.  Keys are matched to ``series`` with floating-point
+            tolerance.
+        series: Sieves to include in the sum.  Defaults to the
+            fine-aggregate series :data:`FM_SIEVE_SERIES_MM`.
+
+    Returns:
+        The fineness modulus, rounded to :data:`FM_REPORT_STEP`.
+
+    Raises:
+        GradingError: If any sieve of ``series`` is missing from the
+            curve (an incomplete analysis cannot yield a meaningful
+            index) or if a percent passing is not finite.
+
+    Example:
+        >>> curve = {9.5: 97.5, 4.75: 88.0, 2.36: 70.0, 1.18: 50.0,
+        ...          0.6: 33.0, 0.3: 18.0, 0.15: 6.0, 0.075: 1.0}
+        >>> fineness_modulus(curve)
+        3.38
+    """
+    total = 0.0
+    missing: List[float] = []
+    for size in series:
+        percent_passing = next(
+            (value for key, value in curve.items() if math.isclose(float(key), size, abs_tol=1e-9)),
+            None,
+        )
+        if percent_passing is None:
+            missing.append(size)
+            continue
+        if not math.isfinite(float(percent_passing)):
+            raise GradingError(f"percent passing on sieve {size} mm is not finite: {percent_passing!r}")
+        total += 100.0 - float(percent_passing)
+
+    if missing:
+        raise GradingError(
+            f"fineness modulus needs the full series {series}; missing sieves (mm): {missing}"
+        )
+    return _round_to_step(total / 100.0, FM_REPORT_STEP)
+
+
+def curve_from_retained(
+    retained_by_sieve: Mapping[float, float],
+    total_mass: Optional[float] = None,
+    pan_mass: float = 0.0,
+) -> Dict[float, float]:
+    """Convert weighed retained masses into a cumulative percent-passing curve.
+
+    A laboratory records the **mass retained on each sieve**; every
+    grading rule in this module works on **cumulative percent passing**.
+    Keeping that conversion here (rather than in a spreadsheet column or
+    a QA adapter) means it is unit-tested and traceable like any other
+    piece of science.
+
+    Args:
+        retained_by_sieve: Sieve opening (mm) → mass retained on that
+            sieve (any consistent mass unit; grams by convention).
+        total_mass: Mass of the original sample.  When supplied, the
+            ASTM C136 mass-balance rule is enforced (see
+            :data:`MASS_BALANCE_TOLERANCE`); when omitted it defaults to
+            ``sum(retained) + pan_mass`` and no balance check is possible.
+        pan_mass: Mass collected in the pan.  The pan is not a sieve, so
+            it enters the balance but not the curve.
+
+    Returns:
+        Sieve opening (mm) → cumulative percent passing rounded to
+        :data:`PERCENT_REPORT_STEP`, ordered from the largest sieve down
+        (material that never reached a sieve passes 100 %).
+
+    Raises:
+        GradingError: If the retained masses are empty, any mass is
+            negative or not finite, the effective total is not positive,
+            or the mass balance disagrees beyond tolerance.
+
+    Example:
+        >>> curve_from_retained({4.75: 25.0, 2.36: 95.0}, total_mass=500.0,
+        ...                     pan_mass=380.0)
+        {4.75: 95.0, 2.36: 76.0}
+    """
+    if not retained_by_sieve:
+        raise GradingError("retained_by_sieve must contain at least one sieve")
+
+    masses: Dict[float, float] = {}
+    for size, mass in retained_by_sieve.items():
+        size_f = float(size)
+        mass_f = float(mass)
+        if size_f <= 0 or not math.isfinite(size_f):
+            raise GradingError(f"sieve size must be a positive finite number, got {size!r}")
+        if mass_f < 0 or not math.isfinite(mass_f):
+            raise GradingError(f"retained mass on sieve {size_f:g} mm must be >= 0, got {mass!r}")
+        if size_f in masses:
+            raise GradingError(f"duplicate sieve size {size_f:g} mm")
+        masses[size_f] = mass_f
+
+    pan = float(pan_mass)
+    if pan < 0 or not math.isfinite(pan):
+        raise GradingError(f"pan_mass must be >= 0, got {pan_mass!r}")
+
+    summed = sum(masses.values()) + pan
+    if total_mass is None:
+        effective_total = summed
+    else:
+        effective_total = float(total_mass)
+        if effective_total <= 0 or not math.isfinite(effective_total):
+            raise GradingError(f"total_mass must be positive, got {total_mass!r}")
+        drift = abs(summed - effective_total) / effective_total
+        if drift > MASS_BALANCE_TOLERANCE:
+            raise GradingError(
+                f"mass balance fails ASTM C136: sieves + pan sum to {summed:.4g} but the "
+                f"sample mass is {effective_total:.4g} (drift {drift * 100:.2f} % > "
+                f"{MASS_BALANCE_TOLERANCE * 100:.1f} %) — re-weigh or check for material loss"
+            )
+
+    if effective_total <= 0:
+        raise GradingError("total mass must be positive to express a grading curve in percent")
+
+    curve: Dict[float, float] = {}
+    cumulative_retained = 0.0
+    for size in sorted(masses, reverse=True):
+        cumulative_retained += masses[size]
+        percent_passing = (1.0 - cumulative_retained / effective_total) * 100.0
+        curve[size] = _round_to_step(percent_passing, PERCENT_REPORT_STEP)
+    return curve

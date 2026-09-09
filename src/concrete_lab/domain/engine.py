@@ -7,7 +7,10 @@ the Excel renderer only *displays* the results.
 
 Supported tests:
 
-* ``1-1`` grading — ISIRI 302 ruleset (envelope + physical rules);
+* ``1-1`` grading — ISIRI 302 ruleset (envelope + physical rules) plus
+  the ASTM C136 fineness modulus; accepts either a percent-passing
+  ``curve`` or weighed ``retained`` masses (converted, with the C136
+  mass-balance check, by the ruleset);
 * ``1-2`` moisture — ASTM C566 dry-basis formula;
 * ``2-1`` fresh density — ASTM C138 mass/volume;
 * ``3-1`` slump — ASTM C143 cone geometry;
@@ -22,7 +25,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, Mapping, Optional, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Tuple
 
 from concrete_lab import constants
 from concrete_lab.domain.quantities import Quantity
@@ -280,11 +283,81 @@ def _calc_rebound(inputs: Inputs) -> TestResult:
     return _result("4-5", tuple(values), status, disclaimer=c805.DISCLAIMER)
 
 
+def _grading_curve(inputs: Inputs) -> Dict[float, float]:
+    """Resolve the grading curve from either accepted input form.
+
+    Laboratories record **masses retained on each sieve**; older callers
+    and the golden corpus also speak **cumulative percent passing**
+    directly.  Both are accepted, and the mass → percent conversion is
+    delegated to the standard's ruleset so the science stays in one
+    place (and under test).
+
+    Args:
+        inputs: Either ``curve`` (mm → percent passing) or ``retained``
+            (mm → mass) with optional ``total_mass_g`` / ``pan_g``.
+
+    Returns:
+        Sieve opening (mm) → cumulative percent passing.
+
+    Raises:
+        EngineError: If neither form is supplied or a mapping is malformed.
+        concrete_lab.standards.isiri.isiri_302.GradingError: If the
+            retained masses violate the ASTM C136 mass-balance rule.
+    """
+    if "curve" in inputs:
+        raw = inputs["curve"]
+        if not isinstance(raw, Mapping):
+            raise EngineError("input 'curve' must be a mapping of sieve mm → percent passing")
+        try:
+            return {float(size): float(percent) for size, percent in raw.items()}
+        except (TypeError, ValueError) as exc:
+            raise EngineError(f"input 'curve' must map numeric sieve sizes to numeric percentages: {exc}") from exc
+
+    if "retained" in inputs:
+        raw = inputs["retained"]
+        if not isinstance(raw, Mapping):
+            raise EngineError("input 'retained' must be a mapping of sieve mm → mass retained (g)")
+        try:
+            retained = {float(size): float(mass) for size, mass in raw.items()}
+        except (TypeError, ValueError) as exc:
+            raise EngineError(f"input 'retained' must map numeric sieve sizes to numeric masses: {exc}") from exc
+        total_mass = _number(inputs, "total_mass_g") if "total_mass_g" in inputs else None
+        pan_mass = _number(inputs, "pan_g") if "pan_g" in inputs else 0.0
+        return isiri_302.curve_from_retained(retained, total_mass=total_mass, pan_mass=pan_mass)
+
+    raise EngineError(
+        "grading requires either 'curve' (sieve mm → percent passing) "
+        "or 'retained' (sieve mm → mass retained in g)"
+    )
+
+
+def _fineness_modulus_value(curve: Dict[float, float]) -> ResultValue:
+    """Fineness modulus row, degrading to an explicit ERROR when uncomputable."""
+    lo, hi = constants.FM_DATA_ERROR_WINDOW
+    rec_lo, rec_hi = constants.RECOMMENDED_FM_RANGE_FINE
+    note = (
+        f"ASTM C136 حد پذیرش تعیین نمی‌کند؛ محدوده متداول ریزدانه بتن {rec_lo:g}–{rec_hi:g}"
+    )
+    try:
+        fm = isiri_302.fineness_modulus(curve)
+    except isiri_302.GradingError as exc:
+        return ResultValue(
+            "fineness_modulus", "مدولوس نرمی (FM)", None, ValidationStatus.ERROR,
+            note=f"قابل محاسبه نیست — {exc}",
+        )
+    if not lo <= fm <= hi:
+        return ResultValue(
+            "fineness_modulus", "مدولوس نرمی (FM)", Quantity(fm, "–"), ValidationStatus.WARN,
+            note=f"خارج از پنجره داده {lo:g}–{hi:g} — ورودی‌ها را بررسی کنید. {note}",
+        )
+    return ResultValue(
+        "fineness_modulus", "مدولوس نرمی (FM)", Quantity(fm, "–"), ValidationStatus.PASS, note=note,
+    )
+
+
 def _calc_grading(inputs: Inputs) -> TestResult:
-    """ISIRI 302 grading check via the full ruleset."""
-    if "curve" not in inputs:
-        raise EngineError("missing input 'curve' (sieve mm → percent passing)")
-    curve = {float(size): float(pct) for size, pct in dict(inputs["curve"]).items()}
+    """ISIRI 302 grading check via the full ruleset (+ ASTM C136 FM)."""
+    curve = _grading_curve(inputs)
 
     evaluation = isiri_302.DEFAULT_RULESET.evaluate(curve)
     values = [
@@ -302,6 +375,7 @@ def _calc_grading(inputs: Inputs) -> TestResult:
             key=f"sieve_{missing}_missing", label=f"الک {missing:g} میلی‌متر",
             status=ValidationStatus.ERROR, note="داده وارد نشده است",
         ))
+    values.append(_fineness_modulus_value(curve))
     values.append(ResultValue(
         "grading_overall", "نتیجه دانه‌بندی", None, evaluation.overall_status,
         note="بر اساس پاکت دانه‌بندی ISIRI 302",
@@ -344,7 +418,9 @@ def calculate(test_id: str, inputs: Inputs) -> TestResult:
     return calculator(inputs)
 
 
-#: Demo inputs used by ``--demo`` builds and by the QA golden dispatch.
+#: Demo inputs used when no ``--input`` case file is supplied, and by the
+#: QA golden dispatch.  This dataset is a contract: it must always
+#: compute cleanly (see :func:`run_demo_cases`).
 DEMO_CASES: Tuple[Tuple[str, Inputs], ...] = (
     ("1-1", {"curve": {9.5: 97.5, 4.75: 88.0, 2.36: 70.0, 1.18: 50.0,
                        0.6: 33.0, 0.3: 18.0, 0.15: 6.0, 0.075: 1.0}}),
@@ -360,10 +436,78 @@ DEMO_CASES: Tuple[Tuple[str, Inputs], ...] = (
 )
 
 
+def run_cases(cases: Iterable[Tuple[str, Inputs]]) -> Tuple[TestResult, ...]:
+    """Compute a sequence of cases, propagating the first error.
+
+    Used for data that must always be valid (the built-in demo dataset
+    and the golden suite).
+
+    Args:
+        cases: ``(test_id, inputs)`` pairs.
+
+    Returns:
+        Results in input order.
+
+    Raises:
+        EngineError: As soon as one case is invalid.
+    """
+    return tuple(calculate(test_id, inputs) for test_id, inputs in cases)
+
+
+@dataclass(frozen=True)
+class BatchOutcome:
+    """Outcome of computing *user-supplied* data: results plus errors.
+
+    A technician's input file may contain several independent mistakes.
+    Reporting all of them at once (instead of a traceback on the first)
+    is what makes the tool usable at a lab bench.
+
+    Attributes:
+        results: Successfully computed results, in input order.
+        errors: One ``"test_id: message"`` string per rejected case.
+    """
+
+    results: Tuple[TestResult, ...] = ()
+    errors: Tuple[str, ...] = ()
+
+    @property
+    def ok(self) -> bool:
+        """``True`` when every case computed."""
+        return not self.errors
+
+
+def run_batch(cases: Iterable[Tuple[str, Inputs]]) -> BatchOutcome:
+    """Compute every case, collecting errors instead of raising.
+
+    Every domain-level rejection in this product — :class:`EngineError`,
+    ``c39.OutOfScopeError``, ``c805.ReboundError`` and
+    ``isiri_302.GradingError`` — deliberately derives from
+    :class:`ValueError`, so one ``except`` clause catches the whole
+    scientific error surface.
+
+    Args:
+        cases: ``(test_id, inputs)`` pairs.
+
+    Returns:
+        A :class:`BatchOutcome`; check :attr:`BatchOutcome.ok`.
+    """
+    results: List[TestResult] = []
+    errors: List[str] = []
+    for test_id, inputs in cases:
+        try:
+            results.append(calculate(test_id, inputs))
+        except ValueError as exc:  # domain contract: all rejections are ValueError
+            errors.append(f"{test_id}: {exc}")
+    return BatchOutcome(results=tuple(results), errors=tuple(errors))
+
+
 def run_demo_cases() -> Tuple[TestResult, ...]:
-    """Compute every demo case; the backbone of the ``--demo`` workbook.
+    """Compute every built-in demo case.
+
+    The demo dataset is part of the product's contract: it must always
+    compute, so this uses the strict :func:`run_cases` path.
 
     Returns:
         Results in :data:`DEMO_CASES` order.
     """
-    return tuple(calculate(test_id, inputs) for test_id, inputs in DEMO_CASES)
+    return run_cases(DEMO_CASES)

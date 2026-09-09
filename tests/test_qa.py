@@ -70,6 +70,32 @@ class TestQAEnginePytest:
         assert report.status is ValidationStatus.FAIL
         assert any("deliberate failure" in failure for failure in report.failures)
 
+    def test_crashed_run_is_never_reported_as_pass(self, tmp_path: Path) -> None:
+        """Regression: a run that executed nothing used to come back as PASS."""
+        report = QAEngine().run_pytest(
+            [str(tmp_path / "does_not_exist"), *PYTEST_OVERRIDES])
+        assert report.passed == 0
+        assert report.failed == 1
+        assert report.status is ValidationStatus.FAIL
+        assert "exit code" in report.failures[0]
+
+    def test_unusable_arguments_are_reported_as_failure(self) -> None:
+        report = QAEngine().run_pytest(["--not-a-real-flag", *PYTEST_OVERRIDES])
+        assert report.status is ValidationStatus.FAIL
+        assert "exit code" in report.failures[0]
+
+    def test_empty_selection_does_not_claim_success(self, tmp_path: Path) -> None:
+        empty = _write_test_file(tmp_path, "empty_module.py", "VALUE = 1\n")
+        report = QAEngine().run_pytest([str(empty), *PYTEST_OVERRIDES])
+        assert report.passed == 0
+        assert report.failed >= 1 or report.notes
+
+    def test_exit_code_is_interpreted_not_ignored(self) -> None:
+        from concrete_lab.qa import engine as qa_engine
+
+        assert qa_engine.PYTEST_OK == 0 and qa_engine.PYTEST_TESTS_FAILED == 1
+        assert set(qa_engine.PYTEST_EXIT_MEANING) == {2, 3, 4, 5}
+
     def test_skipped_tests_count_as_warnings(self, tmp_path: Path) -> None:
         test_file = _write_test_file(tmp_path, "test_skip.py", """
             import pytest
@@ -105,7 +131,7 @@ def _make_artifact(tmp_path: Path, with_formula: bool = False) -> dict:
 
     manifest_path = tmp_path / "artifact.json"
     manifest_path.write_text(
-        json.dumps({key: 0 for key in REQUIRED_MANIFEST_KEYS}), encoding="utf-8"
+        json.dumps(dict.fromkeys(REQUIRED_MANIFEST_KEYS, 0)), encoding="utf-8"
     )
     return {"xlsx": xlsx_path, "manifest": manifest_path}
 

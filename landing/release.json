@@ -1,0 +1,22 @@
+{
+  "build_time": "2026-09-08T22:16:11Z",
+  "data_source": "demo",
+  "filename": "Concrete_Lab_Companion_v4.1.0.xlsx",
+  "generated_at": "2026-09-08T22:16:11Z",
+  "generator": "scripts/make_release_manifest.py",
+  "protection_enabled": false,
+  "qa": {
+    "failed": 0,
+    "passed": 23,
+    "warnings": 14
+  },
+  "qa_status": "warn",
+  "sha256": "1873cd779ad26caffe16702fe23046c71e61d35f9cef3e7385b82d47367dcf27",
+  "source_manifest": "Concrete_Lab_Companion_v4.1.0.json",
+  "tests": {
+    "implemented": 7,
+    "pending": 13,
+    "total": 20
+  },
+  "version": "4.1.0"
+}

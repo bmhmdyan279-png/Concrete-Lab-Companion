@@ -94,7 +94,7 @@ def run_structural_checks(
     )
 
 
-def _find_formula_cells(workbook: "openpyxl.Workbook") -> List[str]:
+def _find_formula_cells(workbook: openpyxl.Workbook) -> List[str]:
     """Return addresses of cells containing formula strings.
 
     The v4 renderer is display-only, so finding even one formula means

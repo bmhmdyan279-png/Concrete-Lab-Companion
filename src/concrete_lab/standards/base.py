@@ -96,7 +96,7 @@ class StandardSpec:
     # -- Construction helpers ------------------------------------------------
 
     @classmethod
-    def from_dict(cls, code: str, data: Mapping[str, Any]) -> "StandardSpec":
+    def from_dict(cls, code: str, data: Mapping[str, Any]) -> StandardSpec:
         """Build a spec from a legacy ``STANDARDS`` dictionary entry.
 
         This is the migration bridge from the old ``build.py`` format::

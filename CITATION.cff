@@ -1,26 +1,40 @@
+# Citation File Format (https://citation-file-format.github.io/)
+#
+# `version` must equal concrete_lab.__version__; tests/test_consistency.py
+# fails the build otherwise.  Fields that do not exist yet are omitted
+# rather than filled with a placeholder: an identifier that reads "soon"
+# is not a citation, it is a broken one.
 cff-version: 1.2.0
-message: "اگر از این ابزار در پژوهش یا آموزش استفاده می‌کنید، لطفاً به شکل زیر ارجاع دهید."
-title: "Concrete Lab Companion —  پیوست دیجیتال کتاب فناوری بتن در آزمایشگاه"
+message: 'اگر از این ابزار در پژوهش یا آموزش استفاده می‌کنید، لطفاً به شکل زیر ارجاع دهید.'
+title: 'Concrete Lab Companion — پیوست دیجیتال کتاب فناوری بتن در آزمایشگاه'
 type: software
 authors:
-  - family-names: "Mohammadian"
-    given-names: "Behnam"
-    orcid: "soon"
-version: "soon"
-doi: "soon"
-date-released: soon
-url: "https://github.com/bmhmdyan279-png/Concrete-Lab-Companion"
+  - family-names: 'Mohammadian'
+    given-names: 'Behnam'
+version: '4.1.0'
+date-released: 2026-09-08
+url: 'https://github.com/bmhmdyan279-png/Concrete-Lab-Companion'
+repository-code: 'https://github.com/bmhmdyan279-png/Concrete-Lab-Companion'
 license: CC-BY-NC-4.0
+abstract: >-
+  A standards-compliant calculation and quality-assurance engine for a concrete
+  laboratory. Scientific logic (ASTM C39/C39M-26, ASTM C805/C805M-25, ISIRI 302
+  and others) is implemented and golden-case verified in Python; the generated
+  Excel workbook is display-only and provably contains no formula cells.
 keywords:
   - concrete
   - laboratory
   - excel
   - quality-assurance
   - civil-engineering
+  - astm
+  - isiri
+license-url: 'https://creativecommons.org/licenses/by-nc/4.0/legalcode'
 preferred-citation:
   type: book
-  title: "فناوری بتن در آزمایشگاه"
+  title: 'فناوری بتن در آزمایشگاه'
   authors:
-    - family-names: "Mohammadian"
-      given-names: "Behnam"
+    - family-names: 'Mohammadian'
+      given-names: 'Behnam'
   year: 2026
+  notes: 'پیوست دیجیتال این کتاب همین نرم‌افزار است.'

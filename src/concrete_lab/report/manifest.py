@@ -29,10 +29,18 @@ REQUIRED_MANIFEST_KEYS: tuple = (
     "standards",
     "rulesets",
     "qa",
+    "tests",
+    "data_source",
     "filename",
     "sha256",
     "sheets",
 )
+
+#: Value of ``data_source`` for a build over the built-in demo dataset.
+DATA_SOURCE_DEMO: str = "demo"
+
+#: Value of ``data_source`` for a build over a user-supplied case file.
+DATA_SOURCE_USER: str = "user-input"
 
 
 def build_manifest(
@@ -42,6 +50,9 @@ def build_manifest(
     sheets: Sequence[str],
     qa_reports: Mapping[str, QAReport],
     protection_enabled: bool,
+    data_source: str = DATA_SOURCE_DEMO,
+    data_source_path: Optional[str] = None,
+    config_source: Optional[str] = None,
 ) -> Dict[str, object]:
     """Assemble the manifest dictionary for one build.
 
@@ -52,11 +63,24 @@ def build_manifest(
         qa_reports: QA tier name → report (e.g. ``golden``,
             ``structural``).
         protection_enabled: Whether worksheet protection was applied.
+        data_source: :data:`DATA_SOURCE_DEMO` or :data:`DATA_SOURCE_USER`
+            — a reader of the workbook must be able to tell sample data
+            from real measurements.
+        data_source_path: File name of the user case file, when any.
+        config_source: Where the configuration was loaded from.
 
     Returns:
         A JSON-serialisable manifest containing every key in
         :data:`REQUIRED_MANIFEST_KEYS`.
+
+    Raises:
+        ValueError: If ``data_source`` is not one of the two known values.
     """
+    if data_source not in (DATA_SOURCE_DEMO, DATA_SOURCE_USER):
+        raise ValueError(
+            f"data_source must be {DATA_SOURCE_DEMO!r} or {DATA_SOURCE_USER!r}, "
+            f"got {data_source!r}"
+        )
     standards = {spec.name: spec.edition for spec in standards_registry.all_standards()}
     rulesets = {}
     for code, module in sorted(standards_registry.RULESETS.items()):
@@ -64,7 +88,7 @@ def build_manifest(
         rulesets[code] = {
             "edition": spec.edition,
             "ruleset_version": getattr(module, "RULESET_VERSION", None),
-            "scope": getattr(module, "SCOPE").value if hasattr(module, "SCOPE") else None,
+            "scope": module.SCOPE.value if hasattr(module, "SCOPE") else None,
         }
 
     combined: Optional[QAReport] = None
@@ -97,6 +121,9 @@ def build_manifest(
             "implemented_ids": sorted(implemented),
             "pending": len(TEST_REGISTRY) - len(implemented),
         },
+        "data_source": data_source,
+        "data_source_path": data_source_path,
+        "config_source": config_source,
         "protection": {
             "enabled": protection_enabled,
             "note": "Worksheet protection prevents accidental modification. "

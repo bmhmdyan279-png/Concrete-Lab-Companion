@@ -1,0 +1,13 @@
+# Development dependencies — the runtime set plus the tools that verify it.
+#
+#   pip install -r requirements-dev.txt
+#   python -m pytest                     # unit, golden-corpus and consistency tests
+#   python build.py --validate           # golden suite + pytest, non-zero on failure
+#
+# CI installs this file, never requirements.txt alone: pytest is not a
+# runtime dependency and must not be one.
+-r requirements.txt
+
+pytest>=7.4
+pytest-cov>=4.1
+ruff>=0.5

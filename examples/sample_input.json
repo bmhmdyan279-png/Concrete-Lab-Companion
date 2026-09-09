@@ -1,0 +1,74 @@
+{
+  "project": {
+    "name": "نمونهٔ ورودی — پل سرخه‌رود",
+    "operator": "آزمایشگاه فنی و مکانیک خاک",
+    "sampling_date": "1404-06-15",
+    "note": "این فایل نمونهٔ ورودی واقعی کاربر است. با «python build.py --input examples/sample_input.json» اجرا کنید تا workbook از همین داده‌ها ساخته شود."
+  },
+  "cases": [
+    {
+      "test_id": "1-1",
+      "inputs": {
+        "total_mass_g": 1000,
+        "pan_g": 15,
+        "retained": {
+          "9.5": 30,
+          "4.75": 80,
+          "2.36": 170,
+          "1.18": 210,
+          "0.6": 180,
+          "0.3": 140,
+          "0.15": 135,
+          "0.075": 40
+        }
+      }
+    },
+    {
+      "test_id": "1-2",
+      "inputs": {
+        "wet_mass_g": 1063.5,
+        "dry_mass_g": 1012.0
+      }
+    },
+    {
+      "test_id": "2-1",
+      "inputs": {
+        "apparatus_mass_g": 4210,
+        "total_mass_g": 28640,
+        "volume_cm3": 10000
+      }
+    },
+    {
+      "test_id": "3-1",
+      "inputs": {
+        "measured_height_mm": 212
+      }
+    },
+    {
+      "test_id": "4-1",
+      "inputs": {
+        "geometry": "cylinder",
+        "diameter_mm": 150,
+        "length_mm": 300,
+        "load_kn": 682.4
+      }
+    },
+    {
+      "test_id": "4-2",
+      "inputs": {
+        "diameter_mm": 150,
+        "length_mm": 300,
+        "load_n": 341000
+      }
+    },
+    {
+      "test_id": "4-5",
+      "inputs": {
+        "readings": [38, 41, 39, 40, 42, 37, 40, 41, 39, 38],
+        "correlation_id": "PRJ-1404-core-vs-rebound",
+        "correlation_slope": 0.62,
+        "correlation_intercept": -8.5
+      }
+    }
+  ]
+}

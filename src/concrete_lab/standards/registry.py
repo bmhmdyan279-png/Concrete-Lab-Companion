@@ -93,4 +93,7 @@ register(StandardSpec("C805", "ASTM C805/C805M", "Assessing the Rebound Number o
 register(StandardSpec("D2419", "ASTM D2419", "Sand Equivalent", "2022"))
 register(StandardSpec("D4791", "ASTM D4791", "Flat & Elongated Particles", "2023"))
 register(StandardSpec("EN196-1", "EN 196-1", "Mortar Strength", "2023"))
-register(StandardSpec("ISIRI302", "ISIRI 302", "ویژگی‌های سنگدانه‌های بتن (Characteristics of Concrete Aggregates)", "1394"))
+register(StandardSpec(
+    "ISIRI302", "ISIRI 302",
+    "ویژگی‌های سنگدانه‌های بتن (Characteristics of Concrete Aggregates)", "1394",
+))

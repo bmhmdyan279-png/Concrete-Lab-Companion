@@ -16,13 +16,27 @@ from concrete_lab.domain.quantities import Quantity
 from concrete_lab.domain.statuses import ValidationStatus
 from concrete_lab.qa.engine import QAReport
 from concrete_lab.render.excel.model import CellModel, RowModel, SheetModel, WorkbookModel
+from concrete_lab.report.manifest import DATA_SOURCE_DEMO, DATA_SOURCE_USER
 from concrete_lab.specs.base import TEST_REGISTRY, all_tests, implemented_tests
 from concrete_lab.standards import registry as standards_registry
 from concrete_lab.standards.base import Scope
 from concrete_lab.utils import utc_now_iso
 
-#: Worksheet layout: default column widths (column → width).
-DEFAULT_WIDTHS: Tuple[Tuple[int, float], ...] = ((1, 36.0), (2, 18.0), (3, 12.0), (4, 14.0), (5, 48.0))
+#: Human-readable description of each data source, shown on the guide and
+#: information sheets.  A reader of the workbook must be able to tell
+#: sample data from real measurements without reading the manifest.
+_DATA_SOURCE_LABEL: Dict[str, str] = {
+    DATA_SOURCE_DEMO: "داده‌های نمونهٔ داخلی موتور (DEMO) — اندازه‌گیری واقعی نیست",
+    DATA_SOURCE_USER: "داده‌های ورودی کاربر",
+}
+
+#: Banner shown at the very top of the guide sheet for demo builds, so the
+#: limitation is impossible to miss instead of buried in a usage guide.
+_DEMO_BANNER: str = (
+    "⚠️ این فایل یک «گزارش نمونه» است، نه ماشین‌حساب: مقادیر زیر از داده‌های نمونهٔ "
+    "داخلی موتور آمده‌اند. برای محاسبهٔ داده‌های خودتان مخزن را با "
+    "«python build.py --input your_data.json» اجرا کنید."
+)
 
 #: Style name used to draw each validation status.
 _STATUS_STYLE: Dict[ValidationStatus, str] = {
@@ -56,11 +70,20 @@ def _status_cell(status: ValidationStatus) -> CellModel:
 # ─── Individual sheets ────────────────────────────────────────────────────
 
 
-def _guide_sheet(config: AppConfig) -> SheetModel:
-    """00 — guide: scope legend and usage rules."""
+def _guide_sheet(config: AppConfig, data_source: str, data_source_path: Optional[str]) -> SheetModel:
+    """00 — guide: data-source banner, scope legend and usage rules."""
     rows = [
         _row(CellModel(config.name, "title")),
         _row(CellModel(f"نسخه {__version__} — موتور محاسباتی جدا از نمایش اکسل", "subtitle")),
+        _row(CellModel("", "label")),
+    ]
+    if data_source == DATA_SOURCE_DEMO:
+        rows.append(_row(CellModel(_DEMO_BANNER, "badge")))
+    else:
+        rows.append(_row(CellModel(
+            f"منبع داده: {data_source_path or 'فایل ورودی کاربر'}", "badge")))
+    rows += [
+        _row(CellModel(_DATA_SOURCE_LABEL[data_source], "note")),
         _row(CellModel("", "label")),
         _row(CellModel("محیط‌های محاسبه", "header"), CellModel("شرح", "header")),
         _row(CellModel("STANDARD", "value"), CellModel("نتیجه نرماتیو؛ مطابق قواعد استاندارد", "label")),
@@ -68,9 +91,12 @@ def _guide_sheet(config: AppConfig) -> SheetModel:
              CellModel("تخمین؛ هرگز مبنای پذیرش یا رد بتن قرار ندهید", "label")),
         _row(CellModel("", "label")),
         _row(CellModel("معماری نسخه ۴", "header"), CellModel("توضیح", "header")),
-        _row(CellModel("Domain Engine", "value"), CellModel("محاسبه علم آزمایش در پایتون (قابل تست و راستی‌آزمایی)", "label")),
-        _row(CellModel("Excel Renderer", "value"), CellModel("فقط نمایش نتایج؛ هیچ فرمول محاسباتی در فایل نیست", "label")),
-        _row(CellModel("QA Engine", "value"), CellModel("اجرای واقعی تست‌ها و موارد طلایی هنگام ساخت و اعتبارسنجی", "label")),
+        _row(CellModel("Domain Engine", "value"),
+             CellModel("محاسبه علم آزمایش در پایتون (قابل تست و راستی‌آزمایی)", "label")),
+        _row(CellModel("Excel Renderer", "value"),
+             CellModel("فقط نمایش نتایج؛ هیچ فرمول محاسباتی در فایل نیست", "label")),
+        _row(CellModel("QA Engine", "value"),
+             CellModel("اجرای واقعی تست‌ها و موارد طلایی هنگام ساخت و اعتبارسنجی", "label")),
         _row(CellModel("", "label")),
         _row(CellModel(constants.PROTECTION_DISCLAIMER, "note")),
         _row(CellModel(f"ساخت: {utc_now_iso()}", "note")),
@@ -78,7 +104,7 @@ def _guide_sheet(config: AppConfig) -> SheetModel:
     return SheetModel(title="00_راهنما", rows=tuple(rows))
 
 
-def _info_sheet(config: AppConfig) -> SheetModel:
+def _info_sheet(config: AppConfig, data_source: str, data_source_path: Optional[str]) -> SheetModel:
     """01 — test/project information from configuration."""
     rows = [
         _row(CellModel("اطلاعات محصول و آزمون", "title")),
@@ -91,6 +117,13 @@ def _info_sheet(config: AppConfig) -> SheetModel:
         _row(CellModel("مرجع ثانویه", "label"), CellModel(config.standards_secondary, "value")),
         _row(CellModel("تعداد کل آزمایش‌ها", "label"), CellModel(len(all_tests()), "value")),
         _row(CellModel("آزمایش‌های پیاده‌سازی‌شده", "label"), CellModel(len(implemented_tests()), "value")),
+        _row(CellModel("در انتظار پیاده‌سازی", "label"),
+             CellModel(len(all_tests()) - len(implemented_tests()), "value")),
+        _row(CellModel("", "label")),
+        _row(CellModel("منبع داده این ساخت", "header"), CellModel("مقدار", "header")),
+        _row(CellModel("نوع داده", "label"), CellModel(_DATA_SOURCE_LABEL[data_source], "value")),
+        _row(CellModel("فایل ورودی", "label"), CellModel(data_source_path or "—", "value")),
+        _row(CellModel("پیکربندی", "label"), CellModel(config.source, "value")),
         _row(CellModel("تاریخ ساخت", "label"), CellModel(utc_now_iso(), "value")),
     ]
     return SheetModel(title="01_اطلاعات_آزمون", rows=tuple(rows))
@@ -138,7 +171,7 @@ def _test_sheet(result: TestResult) -> SheetModel:
 def _primary_value(result: TestResult) -> Tuple[str, str]:
     """Pick the headline value for report/dashboard rows."""
     candidates = ("reported_strength", "tensile_strength", "slump", "density",
-                  "moisture_percent", "retained_mean", "grading_overall")
+                  "moisture_percent", "retained_mean", "fineness_modulus", "grading_overall")
     for key in candidates:
         match = next((v for v in result.values if v.key == key), None)
         if match is not None and match.quantity is not None:
@@ -233,6 +266,12 @@ def _qa_sheet(qa_reports: Mapping[str, QAReport]) -> SheetModel:
         rows.append(_row(CellModel("موارد شکست", "header")))
         for failure in failures:
             rows.append(_row(CellModel(failure, "fail")))
+    notes = [note for report in qa_reports.values() for note in report.notes]
+    if notes:
+        rows.append(_row(CellModel("", "label")))
+        rows.append(_row(CellModel("موارد هشدار (چرا شمارش شدند)", "header")))
+        for note in notes:
+            rows.append(_row(CellModel(note, "warn")))
     return SheetModel(title="24_QA_Test", rows=tuple(rows))
 
 
@@ -279,6 +318,8 @@ def assemble_workbook_model(
     results: Iterable[TestResult],
     config: AppConfig,
     qa_reports: Mapping[str, QAReport],
+    data_source: str = DATA_SOURCE_DEMO,
+    data_source_path: Optional[str] = None,
 ) -> WorkbookModel:
     """Build the complete display model for one build.
 
@@ -286,14 +327,23 @@ def assemble_workbook_model(
         results: Domain engine results to display.
         config: Validated application configuration.
         qa_reports: QA tiers to display on the QA sheet/dashboard.
+        data_source: :data:`DATA_SOURCE_DEMO` or :data:`DATA_SOURCE_USER`;
+            a demo build carries an explicit banner so nobody mistakes a
+            sample report for their own measurements.
+        data_source_path: Name of the user case file, when any.
 
     Returns:
         A :class:`WorkbookModel` ready for the renderer.
+
+    Raises:
+        ValueError: If ``data_source`` is not one of the two known values.
     """
+    if data_source not in _DATA_SOURCE_LABEL:
+        raise ValueError(f"unknown data_source {data_source!r}")
     results = tuple(results)
     sheets: List[SheetModel] = [
-        _guide_sheet(config),
-        _info_sheet(config),
+        _guide_sheet(config, data_source, data_source_path),
+        _info_sheet(config, data_source, data_source_path),
     ]
     sheets.extend(_test_sheet(result) for result in results)
     sheets.append(_report_sheet(results))

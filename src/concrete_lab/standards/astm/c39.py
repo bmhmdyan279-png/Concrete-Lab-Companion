@@ -199,8 +199,8 @@ def calculate(
     lo, hi = PLAUSIBLE_STRENGTH_RANGE_MPA
     if not lo <= reported_mpa <= hi:
         warnings = (
-            f"Reported strength {reported_mpa:.1f} MPa is outside the plausible "
-            f"range [{lo:.0f}, {hi:.0f}] MPa — check inputs",
+            (f"Reported strength {reported_mpa:.1f} MPa is outside the plausible "
+             f"range [{lo:.0f}, {hi:.0f}] MPa — check inputs"),
         )
 
     return C39Result(

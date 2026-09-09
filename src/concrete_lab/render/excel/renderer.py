@@ -25,10 +25,6 @@ from concrete_lab.render.excel.styles import StyleManager
 #: Maximum worksheet title length enforced by Excel.
 EXCEL_TITLE_LIMIT: int = 31
 
-#: Default column widths when a sheet does not override them.
-DEFAULT_WIDTH_FALLBACK = {1: 36.0, 2: 18.0, 3: 12.0, 4: 14.0, 5: 48.0}
-
-
 class ExcelRenderer:
     """Display-only writer from :class:`WorkbookModel` to a workbook."""
 
@@ -71,7 +67,7 @@ class ExcelRenderer:
         if sheet_model.tab_color:
             worksheet.sheet_properties.tabColor = sheet_model.tab_color
         widths = dict(sheet_model.column_widths)
-        for column, width in DEFAULT_WIDTH_FALLBACK.items():
+        for column, width in constants.DEFAULT_COLUMN_WIDTHS.items():
             widths.setdefault(column, width)
         for column, width in widths.items():
             worksheet.column_dimensions[get_column_letter(column)].width = width

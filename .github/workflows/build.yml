@@ -1,60 +1,149 @@
-name: Build and Release Concrete Lab Companion
+name: Build, Verify and Release
+
+# One build, one identity.  The workbook that is uploaded to the Release and
+# the SHA-256 the landing page advertises come from the *same* job run, passed
+# between jobs as a workflow artifact — so the published hash can never
+# describe a different file than the one a user downloads.
 
 on:
   push:
     branches: [main]
+  pull_request:
   release:
     types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  # ── Gate: lint, tests, QA tiers, build, artifact audit ──────────────────
+  verify:
+    name: Lint · test · build · audit
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
 
-      - name: Run QA validation (golden suite + pytest)
+      - name: Lint (ruff)
+        run: python -m ruff check .
+
+      - name: QA validation (golden suite + pytest, non-zero on failure)
         run: python build.py --validate
 
-      - name: Run build (engine + display-only render + structural QA)
+      - name: Test suite with the coverage gate from pyproject.toml
+        run: python -m pytest --cov --cov-report=term
+
+      - name: Build the artifact (engine + display-only render + structural QA)
         run: python build.py --output output --no-protect
 
-      - name: Upload artifacts (workbook, manifest, checksum)
+      - name: Audit the artifact against the v4 product contract
+        run: python scripts/audit_excel.py --output output
+
+      - name: Derive the landing-page release identity from this build
+        run: python scripts/make_release_manifest.py --output output --dest landing/release.json
+
+      - name: Hand the exact bytes to the release and pages jobs
         uses: actions/upload-artifact@v4
         with:
-          name: Concrete-Lab-Companion
+          name: build-output
           path: |
             output/*.xlsx
             output/*.json
             output/*.sha256
+            landing/release.json
+            docs/qa/EXCEL_AUDIT_REPORT.json
+          if-no-files-found: error
+          retention-days: 30
 
-      - name: Upload workbook to Release (if release)
-        if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # ── Publish the release assets (only on a created Release) ──────────────
+  release:
+    name: Upload release assets
+    if: github.event_name == 'release'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Take the artifacts built by the verify job
+        uses: actions/download-artifact@v4
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: output/Concrete_Lab_Companion_v4.0.0.xlsx
-          asset_name: Concrete_Lab_Companion_v4.0.0.xlsx
-          asset_content_type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-      - name: Upload manifest to Release (if release)
-        if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
+          name: build-output
+          path: artifacts
+
+      # The GitHub CLI is preinstalled on GitHub-hosted runners, which keeps
+      # this workflow free of archived release-upload actions and free of any
+      # hard-coded artifact file name (globs come from the built output).
+      - name: Upload workbook, manifest and checksum
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          ls -R artifacts
+          gh release upload "$TAG" \
+            artifacts/output/*.xlsx \
+            artifacts/output/*.json \
+            artifacts/output/*.sha256 \
+            --clobber
+          gh release view "$TAG"
+
+  # ── Deploy the landing page with the identity of that same build ────────
+  pages:
+    name: Deploy landing page
+    if: github.event_name != 'pull_request'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Take the release identity produced by the verify job
+        uses: actions/download-artifact@v4
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: output/Concrete_Lab_Companion_v4.0.0.json
-          asset_name: Concrete_Lab_Companion_v4.0.0.json
-          asset_content_type: application/json
+          name: build-output
+          path: artifacts
+
+      - name: Place the generated release.json next to the page
+        run: |
+          cp artifacts/landing/release.json landing/release.json
+          cat landing/release.json
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./landing
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

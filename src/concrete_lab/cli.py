@@ -1,12 +1,17 @@
 """Command-line interface of the Concrete Lab Companion.
 
-Two real modes (no phantom features):
+Real modes only — no phantom features:
 
+* build (default) — computes results with the domain engine, renders
+  them (display-only), runs structural QA over the artifact and writes
+  the manifest + SHA-256.  The data comes either from the built-in demo
+  dataset or from a user-supplied case file (``--input``);
 * ``--validate`` — executes QA for real: the in-process golden suite
-  plus the pytest suite, and exits non-zero on any failure;
-* build (default) — computes demo results with the domain engine,
-  renders them (display-only), runs structural QA over the artifact
-  and writes the manifest + SHA-256.
+  plus the pytest suite, and exits non-zero on any failure.
+
+``--demo`` and ``--input`` are mutually exclusive: selecting the data
+source is an explicit choice, and asking for both is an error rather
+than a silently ignored flag.
 """
 
 from __future__ import annotations
@@ -14,21 +19,23 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 from pathlib import Path
-from typing import Dict, Optional, Sequence
+from typing import Dict, Optional, Sequence, Tuple
 
-from concrete_lab import __version__
-from concrete_lab.config import AppConfig
-from concrete_lab.domain.engine import run_demo_cases
+from concrete_lab import __version__, constants
+from concrete_lab.cases import CaseFileError, load_case_file
+from concrete_lab.config import AppConfig, ConfigError
+from concrete_lab.domain.engine import DEMO_CASES, Inputs, run_batch, run_demo_cases
 from concrete_lab.domain.statuses import ValidationStatus
-from concrete_lab.qa.engine import QAEngine, QAReport
+from concrete_lab.qa.engine import QAEngine, QAError, QAReport
 from concrete_lab.qa.golden import run_golden_suite
 from concrete_lab.qa.structural import run_structural_checks
+from concrete_lab.render.excel.assembler import assemble_workbook_model
 from concrete_lab.render.excel.protection import ProtectionManager
 from concrete_lab.render.excel.renderer import ExcelRenderer
-from concrete_lab.render.excel.assembler import assemble_workbook_model
-from concrete_lab.report.manifest import build_manifest
+from concrete_lab.report.manifest import DATA_SOURCE_DEMO, DATA_SOURCE_USER, build_manifest
 from concrete_lab.utils import compute_sha256
 
 logger = logging.getLogger("concrete_lab.cli")
@@ -36,19 +43,41 @@ logger = logging.getLogger("concrete_lab.cli")
 #: Artifact naming pattern.
 ARTIFACT_PATTERN: str = "Concrete_Lab_Companion_v{version}.xlsx"
 
+#: Prefix of the usage examples shown by ``--help``.
+EPILOG: str = """\
+examples:
+  python build.py                              # demo dataset → workbook + QA + manifest
+  python build.py --input lab.json             # your own measurements
+  python build.py --validate                   # golden suite + pytest, non-zero on failure
+  python build.py --output dist --no-protect   # unprotected artifact in ./dist
+"""
+
 
 def build_arg_parser() -> argparse.ArgumentParser:
     """Create the CLI parser (kept separate for tests and help output)."""
     parser = argparse.ArgumentParser(
         prog="concrete-lab-companion",
         description="Concrete Lab Companion — standards-compliant calculation & QA engine",
+        epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--output", default="output", help="Output directory (default: ./output)")
     parser.add_argument("--no-protect", action="store_true", help="Disable sheet protection")
-    parser.add_argument("--password-env", default="WORKBOOK_PASSWORD",
-                        help="Environment variable holding the protection password")
-    parser.add_argument("--demo", action="store_true",
-                        help="Compatibility flag: builds always display engine-computed demo results")
+    parser.add_argument("--password-env", default=constants.PASSWORD_ENV_VAR,
+                        help=f"Environment variable holding the protection password "
+                             f"(default: {constants.PASSWORD_ENV_VAR})")
+    parser.add_argument("--config", default=None, metavar="PATH",
+                        help="Configuration file to load instead of the repository config.yaml")
+
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--input", default=None, metavar="PATH",
+                        help="JSON case file with your own measurements "
+                             "(see examples/sample_input.json)")
+    source.add_argument("--demo", action="store_true",
+                        help="Use the built-in demo dataset explicitly. This is the default "
+                             "when --input is absent; the flag exists so the choice can be "
+                             "stated (and so --demo --input is rejected instead of ignored).")
+
     parser.add_argument("--validate", nargs="*", default=None, metavar="PATH",
                         help="Run real QA (golden suite + pytest) and exit; "
                              "optionally restrict pytest to specific paths")
@@ -65,6 +94,28 @@ def _log_qa_report(report: QAReport) -> None:
     logger.info("   status: %s %s", report.status.symbol, report.status.name)
     for failure in report.failures[:10]:
         logger.info("   ✗ %s", failure)
+    for note in report.notes[:10]:
+        logger.info("   ⚠ %s", note)
+
+
+def _resolve_data(args: argparse.Namespace) -> Tuple[Tuple[Tuple[str, Inputs], ...], str, Optional[str]]:
+    """Pick the dataset this build computes.
+
+    Args:
+        args: Parsed CLI arguments.
+
+    Returns:
+        ``(cases, data_source, data_source_path)``.
+
+    Raises:
+        CaseFileError: If ``--input`` was given but the file is unusable.
+    """
+    if args.input:
+        path = Path(args.input)
+        return load_case_file(path), DATA_SOURCE_USER, path.name
+    if args.demo:
+        logger.info("--demo: computing the built-in demo dataset")
+    return DEMO_CASES, DATA_SOURCE_DEMO, None
 
 
 def run_validation(paths: Optional[Sequence[str]] = None) -> int:
@@ -83,7 +134,11 @@ def run_validation(paths: Optional[Sequence[str]] = None) -> int:
     golden = run_golden_suite()
     _log_qa_report(golden)
 
-    pytest_report = QAEngine().run_pytest(pytest_args=list(paths or ()))
+    try:
+        pytest_report = QAEngine().run_pytest(pytest_args=list(paths or ()))
+    except QAError as exc:
+        logger.error("%s", exc)
+        return 1
     _log_qa_report(pytest_report)
 
     combined = golden.merged_with(pytest_report)
@@ -100,20 +155,48 @@ def run_build(args: argparse.Namespace) -> int:
         args: Parsed CLI arguments.
 
     Returns:
-        Process exit code: ``0`` when golden + structural QA pass.
+        Process exit code: ``0`` when the data computed and golden +
+        structural QA passed; ``1`` for unusable input data or QA failure.
     """
-    config = AppConfig.load()
-    config.validate()
-    if args.demo:
-        logger.info("--demo accepted: every build displays engine-computed demo results")
+    try:
+        config = AppConfig.load(path=Path(args.config) if args.config else None)
+        config.validate()
+    except (ConfigError, OSError) as exc:
+        logger.error("configuration rejected: %s", exc)
+        return 1
+    logger.info("Config: %s", config.source)
+
+    try:
+        cases, data_source, data_source_path = _resolve_data(args)
+    except CaseFileError as exc:
+        logger.error("%s", exc)
+        return 1
 
     # Tier 1 — golden suite runs in-process and is embedded in the workbook.
-    golden = run_golden_suite()
+    # Non-strict on purpose: an installed package has no corpus, and refusing
+    # to render because of it would be worse than reporting the gap loudly
+    # (see qa.golden.run_golden_suite).  --validate stays strict.
+    golden = run_golden_suite(strict=False)
     _log_qa_report(golden)
 
     # Domain engine computes; renderer displays (never the reverse).
-    results = run_demo_cases()
-    model = assemble_workbook_model(results, config, {"golden": golden})
+    outcome = run_batch(cases) if data_source == DATA_SOURCE_USER else None
+    if outcome is not None:
+        for error in outcome.errors:
+            logger.error("input rejected → %s", error)
+        if not outcome.ok:
+            logger.error("%d of %d case(s) were rejected; nothing was built",
+                         len(outcome.errors), len(cases))
+            return 1
+        results = outcome.results
+    else:
+        results = run_demo_cases()
+    logger.info("Data source: %s (%d test result(s))", data_source, len(results))
+
+    model = assemble_workbook_model(
+        results, config, {"golden": golden},
+        data_source=data_source, data_source_path=data_source_path,
+    )
     workbook = ExcelRenderer().render(model)
 
     # Protection with an explicit, logged posture.
@@ -141,12 +224,15 @@ def run_build(args: argparse.Namespace) -> int:
     logger.info("Saved: %s", xlsx_path)
     logger.info("SHA-256: %s", sha)
 
-    # Manifest pass 1 (golden QA) so structural checks have something to verify…
     manifest_path = output_dir / (xlsx_path.stem + ".json")
-    manifest = build_manifest(
-        filename=filename, sha256=sha, sheets=model.sheet_titles,
-        qa_reports={"golden": golden}, protection_enabled=protection_enabled,
-    )
+    traceability = {
+        "filename": filename, "sha256": sha, "sheets": model.sheet_titles,
+        "protection_enabled": protection_enabled, "data_source": data_source,
+        "data_source_path": data_source_path, "config_source": config.source,
+    }
+
+    # Manifest pass 1 (golden QA) so structural checks have something to verify…
+    manifest = build_manifest(qa_reports={"golden": golden}, **traceability)
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
 
     # Tier 3 — structural QA over the artifact set.
@@ -154,11 +240,7 @@ def run_build(args: argparse.Namespace) -> int:
     _log_qa_report(structural)
 
     # Manifest pass 2 — final, including structural results.
-    manifest = build_manifest(
-        filename=filename, sha256=sha, sheets=model.sheet_titles,
-        qa_reports={"golden": golden, "structural": structural},
-        protection_enabled=protection_enabled,
-    )
+    manifest = build_manifest(qa_reports={"golden": golden, "structural": structural}, **traceability)
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     logger.info("Manifest: %s", manifest_path)
 
@@ -171,8 +253,6 @@ def run_build(args: argparse.Namespace) -> int:
 
 def _env(password_env_name: str) -> Dict[str, str]:
     """Environment mapping for password lookup (isolated for tests)."""
-    import os
-
     return {password_env_name: os.environ.get(password_env_name, "")}
 
 

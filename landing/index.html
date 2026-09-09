@@ -484,6 +484,32 @@
         }
 
         /* ── Hash Box ── */
+        .scope-notice {
+            max-width: 760px;
+            margin: 0 auto 28px;
+            padding: 16px 22px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(232, 163, 61, 0.35);
+            background: rgba(232, 163, 61, 0.07);
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.85;
+            text-align: center;
+        }
+        .scope-notice strong { color: var(--accent-primary); }
+        .hash-box code[data-state='pending'] { color: var(--text-tertiary); }
+        .hash-box code[data-state='error'] {
+            color: #ff9a8a;
+            font-size: 0.85rem;
+            white-space: normal;
+        }
+        .hash-meta {
+            margin-top: 14px;
+            font-size: 0.82rem;
+            color: var(--text-tertiary);
+        }
+        .hash-meta a { color: var(--accent-primary); text-decoration: none; }
+        .hash-meta a:hover { text-decoration: underline; }
         .hash-box {
             background: var(--surface-glass);
             backdrop-filter: blur(16px);
@@ -1044,8 +1070,15 @@
                 <span class="hero__icon" aria-hidden="true">🧪</span>
                 <h1>Concrete Lab Companion</h1>
                 <p class="subtitle">موتور محاسباتی و کنترل کیفیت آزمایشگاه بتن — محاسبه در پایتون، نمایش در اکسل</p>
+                <div class="scope-notice">
+                    ⚠️ <strong>فایل منتشرشده یک «گزارش نمونه» است، نه ماشین‌حساب.</strong>
+                    اکسل خروجی هیچ فرمولی ندارد (این تضمینِ کنترل کیفیتِ نسخهٔ ۴ است)، بنابراین
+                    مقادیرِ داخلِ آن با تایپ کردن شما تغییر نمی‌کنند. برای محاسبهٔ داده‌های
+                    آزمایشگاه خودتان: <code style="direction:ltr;">python build.py --input your_data.json</code>
+                    — <a href="#guide" style="color:var(--accent-primary);">راهنمای گام‌به‌گام</a>.
+                </div>
                 <div class="badges">
-                    <span class="badge badge--highlight">نسخه ۴.۰.۰</span>
+                    <span class="badge badge--highlight" id="heroVersion">نسخه …</span>
                     <span class="badge">موتور پایتون</span>
                     <span class="badge">بدون ماکرو، بدون فرمول</span>
                     <span class="badge">ASTM / ISIRI</span>
@@ -1105,27 +1138,31 @@
             <div style="text-align:center; margin-bottom:32px;" class="reveal reveal-delay-1">
                 <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/releases/latest" class="btn btn-primary">
                     <span class="btn-icon">📥</span>
-                    دانلود Concrete_Lab_Companion_v4.0.0.xlsx
+                    <span id="downloadLabel">دانلود آخرین نسخه</span>
                 </a>
             </div>
 
             <div class="hash-box reveal reveal-delay-2">
                 <h3>🔐 تأیید یکپارچگی فایل (SHA-256)</h3>
                 <p>پس از دانلود، هش فایل را با مقدار زیر مقایسه کنید. تطابق = فایل دست‌نخورده.</p>
-                <code id="hashValue" onclick="copyHash()" title="برای کپی کلیک کنید">c5b603f37d69c62097f17006db0dbbb4988e10791670c78fb0b79815e646d70b</code>
-                <button class="copy-btn" onclick="copyHash()" aria-label="کپی هش">
+                <code id="hashValue" data-state="pending" title="در حال خواندن از manifest ریلیز…">در حال بارگذاری از release.json …</code>
+                <button class="copy-btn" id="copyBtn" onclick="copyHash()" aria-label="کپی هش">
                     📋 کپی هش
                 </button>
                 <p class="copy-feedback" id="copyFeedback" role="status">✅ هش کپی شد!</p>
+                <p class="hash-meta" id="hashMeta" role="status"></p>
             </div>
 
             <div class="hash-command reveal reveal-delay-3">
                 <strong>💻 PowerShell:</strong>
-                <code>Get-FileHash .\Concrete_Lab_Companion_v4.0.0.xlsx -Algorithm SHA256</code>
+                <code id="hashCommand">Get-FileHash .\Concrete_Lab_Companion_vX.Y.Z.xlsx -Algorithm SHA256</code>
             </div>
 
             <p class="reveal reveal-delay-3" style="text-align:center; font-size:0.88rem; margin-top:16px; color:var(--text-tertiary);">
-                همراه ریلیز، فایل <b style="color:var(--text-secondary);">manifest JSON</b> نیز منتشر می‌شود: هش، نسخه‌های حسابرسی‌شده استانداردها و نتایج QA همان ساخت.
+                هش بالا در زمان ساخت توسط CI نوشته می‌شود و هیچ‌وقت دستی وارد نمی‌شود.
+                همراه ریلیز، فایل‌های <b style="color:var(--text-secondary);">manifest JSON</b> و
+                <b style="color:var(--text-secondary);">.sha256</b> نیز منتشر می‌شوند: هش، نسخه‌های
+                حسابرسی‌شدهٔ استانداردها، منبع داده و نتایج QA همان ساخت.
             </p>
         </div>
     </section>
@@ -1158,7 +1195,7 @@
                     <div class="step-num">۳</div>
                     <div class="step-content">
                         <h4>محاسبه داده‌های خودتان</h4>
-                        <p>مخزن را کلون کنید و با موتور دامنه و <code style="direction:ltr; font-family:var(--font-mono); font-size:0.8rem; color:var(--accent-primary); background:rgba(232,163,61,0.08); padding:2px 8px; border-radius:4px;">python build.py</code> نتایج داده‌های خود را بسازید — راهنمای کامل در README مخزن است.</p>
+                        <p>مخزن را کلون کنید، اندازه‌گیری‌های خود را در یک فایل JSON بگذارید (نمونه: <code style="direction:ltr;">examples/sample_input.json</code>) و اجرا کنید: <code style="direction:ltr; font-family:var(--font-mono); font-size:0.8rem; color:var(--accent-primary); background:rgba(232,163,61,0.08); padding:2px 8px; border-radius:4px;">python build.py --input your_data.json</code>. موتور دامنه محاسبه می‌کند، دادهٔ نامعتبر را با پیام روشن رد می‌کند و اکسل فقط نمایش می‌دهد — راهنمای کامل در README مخزن است.</p>
                     </div>
                 </div>
                 <div class="step reveal reveal-delay-4">
@@ -1229,7 +1266,7 @@
                 </table>
             </div>
             <p class="reveal reveal-delay-3" style="margin-top:20px; font-size:0.85rem; color:var(--text-secondary); text-align:center; line-height:1.9; max-width:720px; margin-left:auto; margin-right:auto;">
-                ⚡ نسخه ۴.۰.۰ تغییر معماری اساسی دارد: موتور محاسباتی کاملاً از نمایش اکسل جدا شده،
+                ⚡ نسخهٔ ۴ (از ۴.۰.۰ به بعد) تغییر معماری اساسی دارد: موتور محاسباتی کاملاً از نمایش اکسل جدا شده،
                 فایل خروجی <b style="color:var(--text-primary);">صفر فرمول</b> است (تضمین‌شده با تست ساختاری)، استانداردها حسابرسی ۲۰۲۶ شده‌اند
                 (C39 نسخه ۲۰۲۶، چکش اشمیت -25) و هر ساخت با QA واقعی تأیید می‌شود.
             </p>
@@ -1268,7 +1305,7 @@
                 <a href="https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/blob/main/CITATION.cff">ارجاع علمی</a>
             </div>
             <div class="build-info">
-                v4.0.0 — Engine: concrete_lab · Orchestrator: build.py
+                <span id="footerVersion">v…</span> — Engine: concrete_lab · Orchestrator: build.py
             </div>
         </div>
     </footer>
@@ -1311,9 +1348,70 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
+        // ── Release info (single source: release.json, written by CI) ──
+        // Nothing on this page is hard-coded: the version, the artifact
+        // name and the SHA-256 all come from the manifest of the actual
+        // build that was released.  If that file cannot be read the page
+        // says so loudly instead of showing a stale hash.
+        const RELEASE_INFO_URL = 'release.json';
+
+        function toPersianDigits(text) {
+            const digits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+            return String(text).replace(/[0-9]/g, (d) => digits[Number(d)]);
+        }
+
+        function setHashState(state, text, title) {
+            const el = document.getElementById('hashValue');
+            el.dataset.state = state;
+            el.textContent = text;
+            if (title) { el.title = title; }
+            document.getElementById('copyBtn').disabled = state !== 'ready';
+        }
+
+        function hashUnavailable(reason) {
+            setHashState('error', '⚠️ هش در دسترس نیست — ' + reason, reason);
+            document.getElementById('hashMeta').textContent =
+                'برای اطمینان از اصالت فایل، manifest JSON همان ریلیز را از صفحهٔ ریلیزها دانلود کنید.';
+        }
+
+        async function loadReleaseInfo() {
+            let info;
+            try {
+                const response = await fetch(RELEASE_INFO_URL + '?t=' + Date.now(), { cache: 'no-store' });
+                if (!response.ok) { throw new Error('HTTP ' + response.status); }
+                info = await response.json();
+            } catch (error) {
+                hashUnavailable('release.json خوانده نشد (' + error.message + ')');
+                return;
+            }
+
+            const sha = String(info.sha256 || '');
+            if (!/^[0-9a-f]{64}$/.test(sha)) {
+                hashUnavailable('هش نامعتبر در release.json');
+                return;
+            }
+
+            const version = String(info.version || '');
+            const filename = String(info.filename || ('Concrete_Lab_Companion_v' + version + '.xlsx'));
+
+            setHashState('ready', sha, 'برای کپی کلیک کنید');
+            document.getElementById('hashMeta').innerHTML =
+                'نسخهٔ <b>' + version + '</b> · ساخت <b>' + (info.build_time || '—') + '</b>' +
+                (info.qa_status ? ' · QA: <b>' + info.qa_status + '</b>' : '') +
+                ' · منبع داده: <b>' + (info.data_source || '—') + '</b>';
+            document.getElementById('downloadLabel').textContent = 'دانلود ' + filename;
+            document.getElementById('hashCommand').textContent =
+                'Get-FileHash .\\' + filename + ' -Algorithm SHA256';
+            document.getElementById('heroVersion').textContent = 'نسخه ' + toPersianDigits(version);
+            document.getElementById('footerVersion').textContent = 'v' + version;
+        }
+
+        loadReleaseInfo();
+
         // ── Copy Hash ──
         function copyHash() {
             const hashEl = document.getElementById('hashValue');
+            if (hashEl.dataset.state !== 'ready') { return; }
             const hashText = hashEl.textContent.trim();
             const feedback = document.getElementById('copyFeedback');
             const btn = document.querySelector('.copy-btn');

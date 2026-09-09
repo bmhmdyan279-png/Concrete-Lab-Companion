@@ -1,15 +1,25 @@
 {
   "test_id": "4-5",
-  "test_name": "چکش اشمیت",
-  "standard": "ASTM C805",
+  "test_name": "چکش اشمیت — عدد بازگشت با همبستگیِ اعلام‌شدهٔ پروژه",
+  "standard": "ASTM C805/C805M-25",
+  "notes": "در ۴.۱.۰ اصلاح شد. نسخهٔ قبلی بدون هیچ همبستگی‌ای مقدار estimated_strength_mpa=35 را انتظار می‌کشید؛ این دقیقاً همان «فرمول جهانی عدد بازگشت → مقاومت» است که ASTM C805 آن را منع می‌کند و این پروژه صریحاً پیاده‌سازی نکرده است. اکنون همبستگی خطیِ پروژه (شناسه، شیب و عرض از مبدأ) بخشی از ورودی است، بنابراین مقدار تخمینی قابل ردیابی و بازتولید است. شرایط ثبت‌شده (سطح خشک، دمای ۲۰ درجه) صرفاً مستندسازی‌اند: رولسیت هیچ ضریب اصلاح سطح/دما اعمال نمی‌کند، چون ضریب جهانی معتبری برای آن‌ها وجود ندارد.",
   "inputs": {
     "readings": [40, 42, 38, 41, 39, 43, 40, 42, 38, 41],
+    "correlation_id": "PRJ-1404-core-vs-rebound",
+    "correlation_slope": 0.62,
+    "correlation_intercept": -8.5
+  },
+  "recorded_conditions": {
     "surface": "dry",
-    "temperature_C": 20
+    "temperature_C": 20,
+    "hammer_axis": "horizontal"
   },
   "expected": {
-    "Rm": 40.5,
-    "estimated_strength_mpa": 35
+    "mean": 40.4,
+    "outliers": [],
+    "retained_mean": 40.4,
+    "estimated_strength_mpa": 16.548,
+    "overall_status": "warn"
   },
-  "tolerance": 0.5
+  "tolerance": 0.01
 }

@@ -74,7 +74,7 @@ class Quantity:
     # -- Construction helpers ------------------------------------------------
 
     @classmethod
-    def dimensionless(cls, value: Number) -> "Quantity":
+    def dimensionless(cls, value: Number) -> Quantity:
         """Create a pure ratio/percentage value without a physical unit.
 
         Args:

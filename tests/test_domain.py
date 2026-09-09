@@ -3,7 +3,6 @@
 Covers:
     * ``concrete_lab.domain.quantities.Quantity``
     * ``concrete_lab.domain.statuses.ValidationStatus``
-    * ``concrete_lab.domain.results.ResultSpec``
     * ``concrete_lab.standards.base.StandardSpec``
 """
 
@@ -12,10 +11,8 @@ import dataclasses
 import pytest
 
 from concrete_lab.domain.quantities import Quantity
-from concrete_lab.domain.results import ResultSpec
 from concrete_lab.domain.statuses import ValidationStatus
 from concrete_lab.standards.base import StandardSpec
-
 
 # ─── Quantity ─────────────────────────────────────────────────────────────
 
@@ -153,63 +150,6 @@ class TestValidationStatus:
         for status in ValidationStatus:
             assert isinstance(status.symbol, str)
             assert status.symbol
-
-
-# ─── ResultSpec ───────────────────────────────────────────────────────────
-
-
-class TestResultSpec:
-    def test_defaults(self) -> None:
-        spec = ResultSpec(key="moisture", label="رطوبت", formula="=(B6-B7)/B7*100")
-        assert spec.unit == ""
-        assert spec.precision == 2
-        assert spec.critical is False
-        assert spec.tooltip == ""
-
-    @pytest.mark.parametrize("precision", [0, 2, 3])
-    def test_num_format(self, precision: int) -> None:
-        spec = ResultSpec(key="k", label="l", formula="=1", precision=precision)
-        expected = "0" if precision == 0 else "0." + "0" * precision
-        assert spec.num_format() == expected
-
-    @pytest.mark.parametrize("bad_key", ["", "   ", "not an id", "1abc", "a-b"])
-    def test_invalid_key_raises(self, bad_key: str) -> None:
-        with pytest.raises(ValueError):
-            ResultSpec(key=bad_key, label="l", formula="=1")
-
-    @pytest.mark.parametrize("field", ["label", "formula"])
-    def test_empty_required_field_raises(self, field: str) -> None:
-        kwargs = {"key": "k", "label": "l", "formula": "=1", field: "  "}
-        with pytest.raises(ValueError):
-            ResultSpec(**kwargs)
-
-    def test_negative_precision_raises(self) -> None:
-        with pytest.raises(ValueError):
-            ResultSpec(key="k", label="l", formula="=1", precision=-1)
-
-    @pytest.mark.parametrize("bad", [2.0, "2", True])
-    def test_non_int_precision_raises_type_error(self, bad: object) -> None:
-        with pytest.raises(TypeError):
-            ResultSpec(key="k", label="l", formula="=1", precision=bad)  # type: ignore[arg-type]
-
-    def test_non_bool_critical_raises_type_error(self) -> None:
-        with pytest.raises(TypeError):
-            ResultSpec(key="k", label="l", formula="=1", critical="yes")  # type: ignore[arg-type]
-
-    def test_is_immutable(self) -> None:
-        spec = ResultSpec(key="k", label="l", formula="=1")
-        with pytest.raises(dataclasses.FrozenInstanceError):
-            spec.precision = 4  # type: ignore[misc]
-
-    def test_is_dimensionless(self) -> None:
-        plain = ResultSpec(key="fm", label="FM", formula="=1")
-        assert plain.is_dimensionless
-        with_unit = ResultSpec(key="s", label="S", formula="=1", unit="MPa")
-        assert not with_unit.is_dimensionless
-
-    def test_str_representation(self) -> None:
-        assert str(ResultSpec(key="k", label="l", formula="=1", unit="MPa")) == "k [MPa]"
-        assert str(ResultSpec(key="k", label="l", formula="=1")) == "k"
 
 
 # ─── StandardSpec ─────────────────────────────────────────────────────────

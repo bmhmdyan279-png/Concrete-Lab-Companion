@@ -1,11 +1,28 @@
+# Concrete Lab Companion — application configuration.
+#
+# Every number in this file that describes the *product* is cross-checked
+# against the live registries by tests/test_consistency.py, so it cannot
+# drift from the code again.  Before 4.1.0 this file claimed
+# `implemented: 20` while the engine implemented 7 — nothing verified it.
+#
+# Load order (see src/concrete_lab/config.py):
+#   --config PATH  >  $CONCRETE_LAB_CONFIG  >  this file  >  code defaults
+
 project:
   name: 'Concrete Lab Companion'
   product_file: 'Concrete_Lab_Companion'
-  version: '4.0.0'
-  build_date: '2026-09-03'
+  # Must equal concrete_lab.__version__ and pyproject.toml [project].version.
+  version: '4.1.0'
+  # Release date of this version (CHANGELOG.md is the authority).  The real
+  # build timestamp of every artifact is recorded in its manifest instead.
+  release_date: '2026-09-08'
   language: 'fa'
   direction: 'RTL'
 
+# Sheet protection is a convenience guard against accidental edits, never a
+# security boundary.  The value is deliberately public and documented as
+# such; CI releases are built with --no-protect, so the published workbook
+# is unprotected.  Set $WORKBOOK_PASSWORD to protect a local build.
 password:
   sheet_protection: 'ConcreteLab2026!'
   note: 'عمدی و عمومی — فقط برای جلوگیری از ویرایش تصادفی. مکانیزم امنیتی نیست.'
@@ -31,41 +48,30 @@ colors:
   chart_sample: '1F4E79'
   chart_limits: 'ED7D31'
 
+# The catalogue holds 20 tests; the domain engine computes 7 of them.  The
+# remaining 13 are listed as pending and are never faked — see
+# src/concrete_lab/specs/ and CALCULATORS in src/concrete_lab/domain/engine.py.
 sheets:
-  total_expected: 20
-  implemented: 20
+  total_expected: 20 # == len(concrete_lab.specs.all_tests())
+  implemented: 7 # == len(concrete_lab.specs.implemented_tests()) == len(CALCULATORS)
+  pending: 13 # == total_expected - implemented
+  # Worksheets the v4 display-only renderer actually emits for a full build.
+  # (The 31-sheet list here before 4.1.0 described the retired v3 workbook.)
   key_sheets:
     - '00_راهنما'
     - '01_اطلاعات_آزمون'
     - '02_آزمایش_1-1'
     - '03_آزمایش_1-2'
-    - '04_آزمایش_1-3'
-    - '05_آزمایش_1-4'
-    - '06_آزمایش_1-5'
-    - '07_آزمایش_1-6'
-    - '08_آزمایش_1-7'
-    - '09_آزمایش_1-8'
     - '10_آزمایش_2-1'
-    - '11_آزمایش_2-2'
-    - '12_آزمایش_2-3'
-    - '13_آزمایش_2-4'
     - '14_آزمایش_3-1'
-    - '15_آزمایش_3-2'
-    - '16_آزمایش_3-3'
     - '17_آزمایش_4-1'
     - '18_آزمایش_4-2'
-    - '19_آزمایش_4-3'
-    - '20_آزمایش_4-4'
     - '21_آزمایش_4-5'
     - '22_گزارش'
     - '23_داشبورد'
     - '24_QA_Test'
     - '25_خطاها_هشدارها'
-    - '_Reference_DB'
     - '_Standards'
-    - '_Validation_Data'
-    - '_Glossary'
-    - '_Materials_DB'
 
 standards:
   primary: 'ASTM'
@@ -77,6 +83,7 @@ validation:
   golden_cases_dir: 'validation/golden_cases/'
   tolerance_default: 0.1
 
+# Counts cross-checked against validation/errata.yaml by the consistency suite.
 errata:
   total: 8
   confirmed: 8

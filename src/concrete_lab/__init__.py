@@ -9,4 +9,4 @@ Version 4 separates the layers that the legacy monolith mixed together:
 * ``report``    — build manifest with traceability metadata.
 """
 
-__version__ = "4.0.0"
+__version__ = "4.1.0"

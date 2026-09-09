@@ -14,7 +14,6 @@ from concrete_lab.qa.golden import run_golden_suite
 from concrete_lab.standards.astm import c39
 from concrete_lab.standards.base import Scope
 
-
 # ─── Simple calculators ───────────────────────────────────────────────────
 
 
@@ -109,7 +108,7 @@ class TestRebound:
         assert estimate.status is ValidationStatus.WARN  # estimation, never PASS
 
     def test_outliers_are_flagged(self) -> None:
-        readings = self.READINGS[:-1] + [25]
+        readings = [*self.READINGS[:-1], 25]
         result = calculate("4-5", {"readings": readings})
         assert any(v.key == "outliers" for v in result.values)
 
@@ -162,9 +161,17 @@ class TestEnginePlumbing:
 
 class TestGoldenSuite:
     def test_every_executable_golden_case_passes(self) -> None:
+        from concrete_lab.qa.golden import DEFAULT_GOLDEN_DIR, ENGINE_CASE_CHECKERS
+
         report = run_golden_suite()
         assert report.failed == 0, report.failures
-        # 4 standards families (4+2+4 files) + 4 legacy engine cases
-        assert report.passed == 14
-        # remaining legacy files are structure-only history
-        assert report.warnings > 0
+
+        # Derived, never hand-counted: standards families + engine cases.
+        standards = sum(
+            1 for path in DEFAULT_GOLDEN_DIR.glob("*.json")
+            if path.name.startswith(("c39_", "c805_", "isiri302_"))
+        )
+        assert report.passed == standards + len(ENGINE_CASE_CHECKERS)
+        assert report.passed + report.warnings == len(list(DEFAULT_GOLDEN_DIR.glob("*.json")))
+        # pending tests are warnings, and every warning is explained
+        assert report.warnings > 0 and len(report.notes) == report.warnings

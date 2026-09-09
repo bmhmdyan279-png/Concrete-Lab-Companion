@@ -1,12 +1,122 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# ─── Project metadata ─────────────────────────────────────────────────────
+# Single source of truth for the version is src/concrete_lab/__init__.py;
+# tests/test_consistency.py fails the build when this file, config.yaml,
+# CITATION.cff, landing/release.json or CHANGELOG.md disagree with it.
+
 [project]
 name = "concrete-lab-companion"
-version = "4.0.0"
-description = "Concrete Lab Companion - standards-compliant calculation & QA engine"
+version = "4.1.0"
+description = "Concrete Lab Companion — standards-compliant calculation & QA engine for a concrete laboratory"
+readme = "README.md"
 requires-python = ">=3.9"
+license = { text = "CC-BY-NC-4.0" }
+authors = [{ name = "Behnam Mohammadian" }]
+keywords = [
+  "concrete",
+  "laboratory",
+  "civil-engineering",
+  "astm",
+  "isiri",
+  "quality-assurance",
+  "excel",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+  "Typing :: Typed",
+]
+
+# Runtime dependencies.  Keep in sync with requirements.txt (enforced by
+# tests/test_consistency.py).  pytest is *not* a runtime dependency.
+dependencies = ["openpyxl>=3.1,<4", "pyyaml>=6.0,<7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "pytest-cov>=4.1", "ruff>=0.5"]
+
+[project.urls]
+Homepage = "https://github.com/bmhmdyan279-png/Concrete-Lab-Companion"
+Repository = "https://github.com/bmhmdyan279-png/Concrete-Lab-Companion.git"
+Issues = "https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/issues"
+Changelog = "https://github.com/bmhmdyan279-png/Concrete-Lab-Companion/blob/main/CHANGELOG.md"
+
+[project.scripts]
+concrete-lab-companion = "concrete_lab.cli:main"
+
+# ─── Packaging (src layout) ───────────────────────────────────────────────
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ─── Test configuration ───────────────────────────────────────────────────
+# This is the *only* pytest configuration source; pytest.ini was deleted in
+# 4.1.0 because having both made pytest warn and gave two answers.
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-ra --tb=short"
+markers = [
+  "golden: golden test case verified against the domain engine or a ruleset",
+  "slow: slow running test",
+]
+
+[tool.coverage.run]
+source = ["src/concrete_lab"]
+branch = true
+
+[tool.coverage.report]
+precision = 1
+exclude_lines = ["pragma: no cover", "if __name__ == .__main__.:", "raise AssertionError"]
+fail_under = 93
+
+# ─── Lint ─────────────────────────────────────────────────────────────────
 
 [tool.ruff]
 line-length = 120
 target-version = "py39"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes: unused imports/names, undefined names
+  "I",   # isort: deterministic import order
+  "B",   # flake8-bugbear: real bug patterns
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
+  "UP",  # pyupgrade
+  "RUF", # ruff-specific
+  "ISC", # implicit string concatenation
+  "EXE", # shebang/executable hygiene
+]
+ignore = [
+  # Python 3.9 is supported, so PEP 585/604 rewrites are deliberately not
+  # applied: `dict[str, str]` and `str | None` are not valid at runtime in
+  # every module on 3.9.  This is a decision, not an oversight.
+  "UP006", "UP007", "UP035", "UP045",
+  # The product's UI language is Persian: strings, docstrings and comments
+  # legitimately contain Arabic-script punctuation and digits.  Flagging them
+  # as "ambiguous unicode" produces hundreds of false positives and would
+  # train reviewers to ignore the linter.
+  "RUF001", "RUF002", "RUF003",
+  "SIM108",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests legitimately reach into internals and build fixtures verbosely.
+"tests/*" = ["RUF012", "C408", "ISC004"]

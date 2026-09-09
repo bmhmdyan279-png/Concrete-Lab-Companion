@@ -7,7 +7,8 @@ Covers the three standards refactored per reviewer feedback:
 * ``concrete_lab.standards.astm.c805`` — ESTIMATION scope, mandatory
   project-specific correlation, strong disclaimer;
 * ``concrete_lab.standards.isiri.isiri_302`` — full grading ruleset
-  (envelope + physical rules), not a bare dictionary.
+  (envelope + physical rules), not a bare dictionary, plus the derived
+  ASTM C136 quantities: ``curve_from_retained`` and ``fineness_modulus``.
 
 Golden cases live in ``validation/golden_cases/`` and follow the same
 schema as the existing workbook golden cases.
@@ -31,7 +32,7 @@ def load_golden_cases(prefix: str) -> List[Dict[str, Any]]:
     """Load golden case files whose name starts with ``prefix``."""
     cases: List[Dict[str, Any]] = []
     for path in sorted(GOLDEN_DIR.glob(f"{prefix}*.json")):
-        with open(path, "r", encoding="utf-8") as fp:
+        with open(path, encoding="utf-8") as fp:
             data = json.load(fp)
             data["file"] = path.name
             cases.append(data)
@@ -163,10 +164,10 @@ class TestC805Unit:
     @pytest.mark.parametrize("bad", [-1.0, 101.0, float("nan")])
     def test_reading_out_of_scale_rejected(self, bad: float) -> None:
         with pytest.raises(c805.ReboundError):
-            c805.mean_rebound_number(self.READINGS[:-1] + (bad,))
+            c805.mean_rebound_number((*self.READINGS[:-1], bad))
 
     def test_outlier_rule_flags_only_deviations_over_seven_units(self) -> None:
-        summary = c805.mean_rebound_number(self.READINGS[:-1] + (25,))
+        summary = c805.mean_rebound_number((*self.READINGS[:-1], 25))
         assert summary.outliers == (25,)
         assert summary.retained_mean > summary.mean  # outlier pulled mean down
 
@@ -280,3 +281,143 @@ class TestISIRI302Unit:
         assert isiri_302.SPEC.edition == "1394"
         assert isiri_302.SPEC.is_active
         assert isiri_302.SCOPE is Scope.STANDARD
+
+
+class TestISIRI302FinenessModulus:
+    """ASTM C136/C136M fineness modulus over the fine-aggregate series."""
+
+    FULL_CURVE = {9.5: 97.5, 4.75: 88.0, 2.36: 70.0, 1.18: 50.0,
+                  0.6: 33.0, 0.3: 18.0, 0.15: 6.0, 0.075: 1.0}
+
+    def test_matches_the_hand_calculation(self) -> None:
+        """Σ cumulative % retained on 9.5…0.150 = 337.5 → FM = 3.38."""
+        assert isiri_302.fineness_modulus(self.FULL_CURVE) == pytest.approx(3.38, abs=1e-9)
+
+    def test_no200_sieve_and_pan_are_excluded(self) -> None:
+        """Including 0.075 mm (or the pan) would inflate the index."""
+        series_without_200 = isiri_302.FM_SIEVE_SERIES_MM
+        assert 0.075 not in series_without_200
+        assert series_without_200[0] == 9.5 and series_without_200[-1] == 0.150
+        with_200 = isiri_302.fineness_modulus(
+            self.FULL_CURVE, series=(*series_without_200, 0.075))
+        assert with_200 > isiri_302.fineness_modulus(self.FULL_CURVE)
+
+    def test_coarser_curve_has_a_higher_modulus(self) -> None:
+        coarse = {9.5: 90.0, 4.75: 60.0, 2.36: 30.0, 1.18: 12.0,
+                  0.6: 5.0, 0.3: 2.0, 0.15: 1.0, 0.075: 0.5}
+        assert isiri_302.fineness_modulus(coarse) > isiri_302.fineness_modulus(self.FULL_CURVE)
+
+    def test_finer_curve_has_a_lower_modulus(self) -> None:
+        fine = {9.5: 100.0, 4.75: 99.0, 2.36: 95.0, 1.18: 88.0,
+                0.6: 75.0, 0.3: 55.0, 0.15: 25.0, 0.075: 8.0}
+        assert isiri_302.fineness_modulus(fine) < isiri_302.fineness_modulus(self.FULL_CURVE)
+
+    def test_reported_to_the_standard_precision(self) -> None:
+        """C136 reports the index to 0.01; no floating-point tails."""
+        value = isiri_302.fineness_modulus(self.FULL_CURVE)
+        assert value == round(value, 2)
+
+    @pytest.mark.parametrize("dropped", [9.5, 4.75, 0.15])
+    def test_incomplete_series_is_refused(self, dropped: float) -> None:
+        """A silently shortened series would yield a wrong index."""
+        incomplete = {k: v for k, v in self.FULL_CURVE.items() if k != dropped}
+        with pytest.raises(isiri_302.GradingError, match="missing sieves"):
+            isiri_302.fineness_modulus(incomplete)
+
+    def test_non_finite_value_is_refused(self) -> None:
+        curve = dict(self.FULL_CURVE)
+        curve[2.36] = float("nan")
+        with pytest.raises(isiri_302.GradingError, match="not finite"):
+            isiri_302.fineness_modulus(curve)
+
+
+class TestISIRI302CurveFromRetained:
+    """Mass → percent-passing conversion, with the C136 mass-balance rule."""
+
+    RETAINED = {9.5: 25.0, 4.75: 95.0, 2.36: 180.0, 1.18: 200.0,
+                0.6: 170.0, 0.3: 150.0, 0.15: 120.0, 0.075: 50.0}
+    PAN = 10.0
+    TOTAL = 1000.0
+
+    def test_conversion_matches_the_hand_calculation(self) -> None:
+        curve = isiri_302.curve_from_retained(self.RETAINED, total_mass=self.TOTAL,
+                                              pan_mass=self.PAN)
+        expected = {9.5: 97.5, 4.75: 88.0, 2.36: 70.0, 1.18: 50.0,
+                    0.6: 33.0, 0.3: 18.0, 0.15: 6.0, 0.075: 1.0}
+        assert curve == pytest.approx(expected, abs=1e-9)
+
+    def test_curve_is_ordered_largest_sieve_first(self) -> None:
+        curve = isiri_302.curve_from_retained(self.RETAINED, total_mass=self.TOTAL,
+                                              pan_mass=self.PAN)
+        sizes = list(curve)
+        assert sizes == sorted(sizes, reverse=True)
+
+    def test_percentages_are_reported_to_the_standard_precision(self) -> None:
+        """0.1 % per C136 — and no 32.99999999999999 leaking into a cell."""
+        curve = isiri_302.curve_from_retained({4.75: 1.0, 2.36: 2.0}, total_mass=300.0,
+                                              pan_mass=297.0)
+        for percent in curve.values():
+            assert percent == round(percent, 1)
+
+    def test_pan_enters_the_balance_but_not_the_curve(self) -> None:
+        with_pan = isiri_302.curve_from_retained({4.75: 100.0}, total_mass=1000.0,
+                                                 pan_mass=900.0)
+        assert with_pan == {4.75: 90.0}
+        assert 0.075 not in with_pan
+
+    def test_total_defaults_to_the_weighed_sum(self) -> None:
+        inferred = isiri_302.curve_from_retained({9.5: 250.0, 4.75: 250.0}, pan_mass=500.0)
+        explicit = isiri_302.curve_from_retained({9.5: 250.0, 4.75: 250.0},
+                                                 total_mass=1000.0, pan_mass=500.0)
+        assert inferred == explicit == {9.5: 75.0, 4.75: 50.0}
+
+    def test_mass_balance_violation_is_refused(self) -> None:
+        """C136: sieves + pan must agree with the sample mass within 0.3 %."""
+        with pytest.raises(isiri_302.GradingError, match="mass balance"):
+            isiri_302.curve_from_retained(self.RETAINED, total_mass=900.0, pan_mass=self.PAN)
+
+    def test_balance_within_tolerance_is_accepted(self) -> None:
+        curve = isiri_302.curve_from_retained(self.RETAINED, total_mass=1001.0,
+                                              pan_mass=self.PAN)
+        assert curve[9.5] == pytest.approx(97.5, abs=0.1)
+
+    @pytest.mark.parametrize("bad", [{}, ])
+    def test_empty_input_is_refused(self, bad: Dict[float, float]) -> None:
+        with pytest.raises(isiri_302.GradingError, match="at least one sieve"):
+            isiri_302.curve_from_retained(bad)
+
+    @pytest.mark.parametrize("retained,total,pan", [
+        ({4.75: -1.0}, None, 0.0),          # negative mass
+        ({4.75: float("nan")}, None, 0.0),  # non-finite mass
+        ({-4.75: 10.0}, None, 0.0),         # non-physical sieve size
+        ({4.75: 10.0}, 0.0, 0.0),           # zero total
+        ({4.75: 10.0}, None, -5.0),         # negative pan
+        ({4.75: float("inf")}, None, 0.0),  # infinite mass
+    ])
+    def test_malformed_masses_are_refused(self, retained: Dict[float, float],
+                                          total: Any, pan: float) -> None:
+        with pytest.raises(isiri_302.GradingError):
+            isiri_302.curve_from_retained(retained, total_mass=total, pan_mass=pan)
+
+    def test_zero_retained_on_the_top_sieve_is_allowed(self) -> None:
+        """Nothing caught on 9.5 mm is a normal result, not an error."""
+        curve = isiri_302.curve_from_retained({9.5: 0.0, 4.75: 500.0},
+                                              total_mass=1000.0, pan_mass=500.0)
+        assert curve[9.5] == 100.0
+        assert curve[4.75] == 50.0
+
+    def test_same_sieve_written_two_ways_is_refused(self) -> None:
+        """JSON keys are strings, so ``"4.75"`` and ``"4.750"`` both arrive.
+
+        Silently keeping only one of them would corrupt the whole curve, so
+        the collision is rejected instead of resolved by last-write-wins.
+        """
+        with pytest.raises(isiri_302.GradingError, match="duplicate"):
+            isiri_302.curve_from_retained({"4.75": 10.0, "4.750": 20.0, "2.36": 30.0},
+                                          total_mass=1000.0, pan_mass=940.0)
+
+    def test_string_keys_from_json_are_accepted(self) -> None:
+        """The realistic path: ``json.load`` hands back string sieve sizes."""
+        curve = isiri_302.curve_from_retained({"9.5": 250.0, "4.75": 250.0},
+                                              total_mass=1000.0, pan_mass="500")
+        assert curve == {9.5: 75.0, 4.75: 50.0}

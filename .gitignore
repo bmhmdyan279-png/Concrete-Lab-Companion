@@ -15,6 +15,15 @@ output/
 *.xlsx
 *.sha256
 
+# Generated per build by scripts/audit_excel.py; published as a CI artifact.
+# Committing it would mean shipping a report about a build nobody can reproduce.
+docs/qa/EXCEL_AUDIT_REPORT.json
+
+# Test/coverage scratch
+.coverage
+.pytest_cache/
+.ruff_cache/
+
 # IDE
 .vscode/
 .idea/

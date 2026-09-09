@@ -1,34 +1,104 @@
 {
-  "phase": 2,
-  "source": "GitHub Release",
-  "file": "Concrete_Lab_Companion_v1.0.0.xlsx",
-  "size_kb": 60.98046875,
-  "sheets": 31,
-  "named_ranges": 0,
-  "total_formulas": 136,
-  "hardcoded_refs": 136,
-  "circular_refs": [
-    "17_آزمایش_4-1!C11: =IF(OR(C7=\"\",C11=\"—\",C11=0),\"—\",ROUND(C7*1000/C11,1))",
-    "23_داشبورد!C7: =C7/C6"
+  "generator": "scripts/audit_excel.py",
+  "package_version": "4.1.0",
+  "file": "Concrete_Lab_Companion_v4.1.0.xlsx",
+  "size_kb": 21.3,
+  "sha256": "ac22bbf9082d6216bc8d7301a30619cd8584fd3bc6f18f6760b79abf81c038ee",
+  "sheets": [
+    "00_راهنما",
+    "01_اطلاعات_آزمون",
+    "02_آزمایش_1-1",
+    "03_آزمایش_1-2",
+    "10_آزمایش_2-1",
+    "14_آزمایش_3-1",
+    "17_آزمایش_4-1",
+    "18_آزمایش_4-2",
+    "21_آزمایش_4-5",
+    "22_گزارش",
+    "23_داشبورد",
+    "24_QA_Test",
+    "25_خطاها_هشدارها",
+    "_Standards"
   ],
-  "data_validations": 35,
-  "conditional_formatting": 0,
-  "protected_sheets": 26,
-  "golden_tests": 21,
-  "calc_mode": null,
-  "issues": [
-    "نام شیت‌ها دارای '-' است (مشکل Excel Online): ['02_آزمایش_1-1', '03_آزمایش_1-2', '04_آزمایش_1-3']...",
-    "تعداد Named Ranges کم است (0). خطر ارجاعات سخت‌افزاری.",
-    "Calculation Mode: 'None' (باید auto باشد)",
-    "🚨 فرمول دایره‌ای (منتقد ۸): 17_آزمایش_4-1!C11",
-    "🚨 فرمول دایره‌ای (منتقد ۸): 23_داشبورد!C7",
-    "🚨 بحران ارجاعات سخت‌افزاری (منتقد ۵): 136 ارجاع مستقیم",
-    "Conditional Formatting = 0 - منتقد ۸"
-  ],
-  "positives": [
-    "✅ 136 فرمول برای Git Diff استخراج شد",
-    "Golden Tests: 21 فایل تست ✅",
-    "Data Validation: 35 قانون ✅",
-    "شیت‌های محافظت‌شده: 26/31"
+  "sheet_count": 14,
+  "formula_cells": 0,
+  "protected_sheets": 0,
+  "catalogue": {
+    "total": 20,
+    "implemented": 7
+  },
+  "passed": 14,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "sha256-sidecar-matches",
+      "ok": true,
+      "detail": "sidecar ac22bbf9082d6216… vs actual ac22bbf9082d6216…"
+    },
+    {
+      "check": "manifest-parses",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "manifest-complete",
+      "ok": true,
+      "detail": "missing keys: []"
+    },
+    {
+      "check": "manifest-version-current",
+      "ok": true,
+      "detail": "manifest '4.1.0' vs package '4.1.0'"
+    },
+    {
+      "check": "manifest-sha-matches",
+      "ok": true,
+      "detail": "the manifest was written for different bytes"
+    },
+    {
+      "check": "zero-formula-cells",
+      "ok": true,
+      "detail": "0 formula cell(s): []"
+    },
+    {
+      "check": "no-placeholder-text",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "check": "sheet-inventory-complete",
+      "ok": true,
+      "detail": "missing: []"
+    },
+    {
+      "check": "no-stray-sheets",
+      "ok": true,
+      "detail": "unexpected: []"
+    },
+    {
+      "check": "catalogue-size-consistent",
+      "ok": true,
+      "detail": "the 20-test catalogue changed; update config.yaml and this script"
+    },
+    {
+      "check": "estimation-badge-present",
+      "ok": true,
+      "detail": "21_آزمایش_4-5 lacks the 'ESTIMATED — NOT FOR ACCEPTANCE' badge"
+    },
+    {
+      "check": "estimation-disclaimer-present",
+      "ok": true,
+      "detail": "21_آزمایش_4-5 lacks the C805 disclaimer"
+    },
+    {
+      "check": "protection-matches-manifest",
+      "ok": true,
+      "detail": "0 protected sheet(s) but the manifest claims enabled=False"
+    },
+    {
+      "check": "structural-qa-tier",
+      "ok": true,
+      "detail": ""
+    }
   ]
 }
